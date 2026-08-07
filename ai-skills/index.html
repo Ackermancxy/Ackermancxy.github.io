@@ -543,8 +543,8 @@
                   <input type="text" id="gsText" placeholder="留空则自动生成"></div>
               </div>
             </div>
-            <div><div class="form-section-label">排版</div>
-              <div class="form-group full"><label>排版布局 <span class="hint">— 文字与图像的排列方式</span></label>
+            <div><div class="form-section-label">构图</div>
+              <div class="form-group full"><label>实虚布局 <span class="hint">— 原片与抽象面板的排列方式</span></label>
                 <div class="layout-grid" id="gs-layout"></div></div>
             </div>
             <div><div class="form-section-label">色彩</div>
@@ -577,61 +577,58 @@
           ], '_gsAbstraction', 'medium');
           // Typography layout builder
           const gsLayouts = [
-            { id: 'top-title', label: '标题置顶' },
-            { id: 'bottom-title', label: '标题置底' },
-            { id: 'centered-title', label: '居中标题' },
-            { id: 'text-left', label: '左文右图' },
-            { id: 'text-right', label: '右文左图' },
-            { id: 'embedded-br', label: '嵌入右下' },
-            { id: 'diagonal', label: '对角线' },
-            { id: 'two-column', label: '双栏文字' },
-            { id: 'micro-corner', label: '微文字角落' }
+            { id: 'photo-top', label: '实上虚下' },
+            { id: 'photo-bottom', label: '虚上实下' },
+            { id: 'photo-left', label: '实左虚右' },
+            { id: 'photo-right', label: '虚左实右' },
+            { id: 'photo-inset', label: '实嵌虚中' },
+            { id: 'illustration-inset', label: '虚嵌实中' },
+            { id: 'diagonal-split', label: '实虚对角' },
+            { id: 'photo-bg', label: '实为背景' },
+            { id: 'illustration-bg', label: '虚为背景' }
           ];
           const gsDiags = {
-            'top-title': [
-              { x:5, y:5, w:90, h:16, bg:'#c77d61' },
-              { x:5, y:26, w:90, h:69, bg:'#8a9ba8' }
+            'photo-top': [
+              { x:5, y:5, w:90, h:45, bg:'#8a9ba8' },
+              { x:5, y:55, w:90, h:40, bg:'#c77d61' }
             ],
-            'bottom-title': [
-              { x:5, y:5, w:90, h:69, bg:'#8a9ba8' },
-              { x:5, y:79, w:90, h:16, bg:'#c77d61' }
+            'photo-bottom': [
+              { x:5, y:5, w:90, h:40, bg:'#c77d61' },
+              { x:5, y:50, w:90, h:45, bg:'#8a9ba8' }
             ],
-            'centered-title': [
-              { x:5, y:5, w:90, h:32, bg:'#8a9ba8' },
-              { x:10, y:42, w:80, h:14, bg:'#c77d61' },
-              { x:5, y:61, w:90, h:34, bg:'#8a9ba8' }
+            'photo-left': [
+              { x:5, y:5, w:43, h:90, bg:'#8a9ba8' },
+              { x:53, y:5, w:42, h:90, bg:'#c77d61' }
             ],
-            'text-left': [
-              { x:5, y:5, w:38, h:90, bg:'#c77d61' },
-              { x:48, y:5, w:47, h:90, bg:'#8a9ba8' }
+            'photo-right': [
+              { x:5, y:5, w:42, h:90, bg:'#c77d61' },
+              { x:52, y:5, w:43, h:90, bg:'#8a9ba8' }
             ],
-            'text-right': [
-              { x:5, y:5, w:47, h:90, bg:'#8a9ba8' },
-              { x:57, y:5, w:38, h:90, bg:'#c77d61' }
+            'photo-inset': [
+              { x:5, y:5, w:90, h:90, bg:'#c77d61' },
+              { x:25, y:28, w:45, h:40, bg:'#8a9ba8' }
             ],
-            'embedded-br': [
+            'illustration-inset': [
               { x:5, y:5, w:90, h:90, bg:'#8a9ba8' },
-              { x:55, y:68, w:38, h:22, bg:'#c77d61' }
+              { x:28, y:30, w:38, h:36, bg:'#c77d61' }
             ],
-            'diagonal': [
-              { x:5, y:5, w:90, h:90, bg:'#8a9ba8' },
-              { x:10, y:40, w:50, h:8, bg:'#c77d61', rot:-20 },
-              { x:35, y:55, w:45, h:8, bg:'#c77d61', rot:-20 }
+            'diagonal-split': [
+              { x:5, y:5, w:75, h:45, bg:'#8a9ba8' },
+              { x:22, y:48, w:73, h:47, bg:'#c77d61' }
             ],
-            'two-column': [
-              { x:5, y:5, w:90, h:60, bg:'#8a9ba8' },
-              { x:5, y:72, w:42, h:18, bg:'#c77d61' },
-              { x:53, y:72, w:42, h:18, bg:'#c77d61' }
+            'photo-bg': [
+              { x:5, y:5, w:90, h:90, bg:'#8a9ba8', opacity:0.5 },
+              { x:20, y:20, w:55, h:55, bg:'#c77d61' }
             ],
-            'micro-corner': [
-              { x:5, y:5, w:90, h:90, bg:'#8a9ba8' },
-              { x:68, y:85, w:25, h:8, bg:'#c77d61' }
+            'illustration-bg': [
+              { x:5, y:5, w:90, h:90, bg:'#c77d61', opacity:0.5 },
+              { x:20, y:20, w:55, h:55, bg:'#8a9ba8' }
             ]
           };
           const lc = document.getElementById('gs-layout');
           gsLayouts.forEach(l => {
             const el = document.createElement('div');
-            el.className = `layout-option${l.id === 'bottom-title' ? ' selected' : ''}`;
+            el.className = `layout-option${l.id === 'photo-top' ? ' selected' : ''}`;
             const dots = (gsDiags[l.id]||[]).map(d =>
               `<div class="dot" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%;background:${d.bg};${d.rot ? `transform:rotate(${d.rot}deg);transform-origin:center;` : ''}border-radius:3px;"></div>`
             ).join('');
@@ -646,7 +643,7 @@
           });
 
           window._gsColor = 'cobalt-blue'; window._gsPaper = 'warm-cream';
-          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'bottom-title';
+          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top';
         },
         generate: function() {
           const scene = document.getElementById('gsScene').value.trim();
@@ -656,7 +653,7 @@
           const mood = window._gsMood || 'quiet';
           const lang = window._gsLang || 'en';
           const absLevel = window._gsAbstraction || 'medium';
-          const gsLayout = window._gsLayout || 'bottom-title';
+          const gsLayout = window._gsLayout || 'photo-top';
 
           const absMap = { low: '30-40', medium: '60-80', high: '80-95' };
           const absRemove = absMap[absLevel];
@@ -671,20 +668,20 @@
           }[mood] || 'quiet';
 
           const gsLayoutMap = {
-            'top-title': 'Typography layout: top-title. A compact title bar occupies the top 14-18% of the poster, with the photographic and illustration field below. The title is set in restrained editorial serif or sans-serif, left-aligned or centered, with generous letter-spacing. The eye path enters through the title, then descends into the visual field.',
-            'bottom-title': 'Typography layout: bottom-title. The photographic and illustration field occupies the upper 70-75% of the poster. A compact title block sits at the bottom 14-18%, acting as a quiet caption. The title is set in small restrained editorial serif, left-aligned or centered. The eye path enters through the visual field, then rests on the title below.',
-            'centered-title': 'Typography layout: centered-title. The visual field is split into upper and lower sections with a horizontal title band across the center. The title occupies about 12-16% of the poster height at the midline, acting as a visual hinge. Set in restrained serif with generous letter-spacing, the title creates a pause before the eye continues to the lower visual field.',
-            'text-left': 'Typography layout: text-left. A text column occupies the left 35-42% of the poster, with the photographic and illustration field on the right 55-62%. The text column contains the title and optional subtitle, set in restrained editorial serif, aligned to the left margin. The eye path enters through the text, then moves rightward into the visual field.',
-            'text-right': 'Typography layout: text-right. The photographic and illustration field occupies the left 55-62% of the poster, with a text column on the right 35-42%. The text column contains the title and optional subtitle, set in restrained editorial serif. The eye path enters through the visual field, then moves rightward to the text.',
-            'embedded-br': 'Typography layout: embedded-br. The photographic and illustration field fills the entire poster. A small typography block is embedded in the bottom-right quadrant, occupying about 8-12% of the poster area. The title is set in small restrained serif or sans-serif, overlaid on the visual field with subtle opacity or a minimal background. The eye path reads the full image, then discovers the text in the lower-right.',
-            'diagonal': 'Typography layout: diagonal. Text lines are arranged along a gentle diagonal axis (approximately -15 to -25 degrees), creating dynamic tension. Two to three short text lines step diagonally across the upper-left to lower-right axis of the visual field. The photographic and illustration field fills the rest of the poster. Set in restrained serif or sans-serif, the diagonal text adds a handmade, editorial energy.',
-            'two-column': 'Typography layout: two-column editorial. The photographic and illustration field occupies the upper 55-65% of the poster. Below it, a two-column text block contains the title and supporting text, occupying about 18-22% of the poster height. The columns are separated by a narrow gap. Set in small restrained serif, this layout evokes an editorial or monograph feel.',
-            'micro-corner': 'Typography layout: micro-corner. The photographic and illustration field fills nearly the entire poster. A single line of text in very small size (6-8pt equivalent) is placed in a corner (bottom-right or bottom-left), occupying less than 3% of the poster area. The text is barely noticeable at first glance, rewarding close looking. This is the most minimal typography treatment.'
+            'photo-top': 'Composition: photo-top. The original photograph occupies the upper 42-52% of the canvas as the factual anchor. The illustration field extends below it, occupying the lower 48-58%. The eye path enters through the photographic anchor, then descends into the abstract field. The torn-paper transition edge runs horizontally between them.',
+            'photo-bottom': 'Composition: photo-bottom. The illustration field occupies the upper 42-52% of the canvas, with the original photograph below it at 48-58%. The eye path enters through the abstract field, then descends into the photographic anchor. The torn-paper transition edge runs horizontally between them.',
+            'photo-left': 'Composition: photo-left. The original photograph occupies the left 40-50% of the canvas as a vertical strip. The illustration field extends across the right 50-60%. The eye path enters from the left photographic anchor and moves rightward into the abstract field. The torn-paper edge runs vertically between them.',
+            'photo-right': 'Composition: photo-right. The illustration field occupies the left 50-60% of the canvas, with the original photograph on the right 40-50%. The eye path enters through the abstract field on the left and moves rightward into the photographic anchor. The torn-paper edge runs vertically between them.',
+            'photo-inset': 'Composition: photo-inset. The original photograph appears as a smaller inset panel surrounded by the illustration field. The photo occupies about 25-35% of the canvas, placed in the center or slightly off-center within the larger illustration field. The illustration extends beyond the photo on all sides. The torn-paper edge encircles the photo panel.',
+            'illustration-inset': 'Composition: illustration-inset. The abstract illustration appears as a smaller inset panel within the original photograph. The illustration occupies about 25-35% of the canvas, placed as a floating panel inside the photographic field. The photograph extends beyond the illustration on all sides. The torn-paper edge encircles the illustration panel.',
+            'diagonal-split': 'Composition: diagonal-split. The photograph and illustration field meet along a diagonal axis, creating a dynamic compositional tension. The photograph occupies roughly the upper-left triangular portion and the illustration occupies the lower-right, or vice versa. The torn-paper transition edge follows the diagonal line.',
+            'photo-bg': 'Composition: photo-bg. The original photograph fills the entire canvas as a full-bleed background layer. The abstract illustration elements float above it as smaller overlaid forms, occupying about 30-45% of the frame. The photograph reads as the atmospheric foundation with illustration marks on top.',
+            'illustration-bg': 'Composition: illustration-bg. The abstract illustration fills the entire canvas as a full-bleed background layer. The original photograph appears as a smaller floating panel above it, occupying about 30-45% of the frame. The illustration reads as the atmospheric foundation with the photographic anchor on top.'
           };
-          const layoutDesc = gsLayoutMap[gsLayout] || gsLayoutMap['bottom-title'];
+          const layoutDesc = gsLayoutMap[gsLayout] || gsLayoutMap['photo-top'];
 
           return [
-            `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. The composition uses a transformative seam layout: photography occupies about 30-45% of the frame as the factual anchor, and an enlarged illustration field extends across roughly 50-70% of the poster. The eye path enters through the photographic anchor, then moves into the illustrated field and chromatic structure, finally resting in quiet paper.`,
+            `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. The eye path enters through the photographic anchor, then moves into the illustrated field and chromatic structure, finally resting in quiet paper.`,
             `Scene fidelity: ${scene ? `preserve the scene identity and core spatial relationships as described: "${scene}".` : 'preserve the supplied reference photograph as the factual anchor — keep the scene identity, natural color atmosphere, and defining spatial relationships.'} Keep the photographic portion truthful — natural color atmosphere, recognizable geometry, and the defining spatial invariants. The photograph remains the factual anchor.`,
             `Illustration field: use medium abstraction, removing roughly ${absRemove}% of descriptive detail. Merge repeated or adjacent forms into larger masses. Replace realistic shading with flat ink, broken contour, and cut-paper treatment. The illustration reinterprets rather than traces the source.${textLine ? `\n\nMicro-text: ${langMode}. ${textLine}` : `\n\nMicro-text: ${langMode}. Author a compact scene-derived line — a standalone word, keyword sequence, or very short phrase that names the scene's quiet emotional residue rather than metadata.`}\n\n${layoutDesc}\n\nChromatic structure: one added print hue as ${color}, in source-continuation integration mode. The color derives a contour from the source geometry and crosses the photo-paper boundary. It occupies about 3-8% of the poster as an opaque cut-paper or flat printed form.\n\nTorn-paper handoff: a visible hand-torn fibrous edge at the main photo-paper boundary. Irregular contour, narrow exposed-fiber fringe (1-3% of short edge), warm paper-tone interruption. No digital clipping or uniform frame.`,
             `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low contrast. Paper fibers, restrained speckles, and scan noise throughout. The mood is ${moodMap}: a tactile, quiet, non-commercial paper art piece. No 3D, no cinematic lighting, no glossy mockup, no commercial headline hierarchy, no neon, no dense detail. The result must read as a real printed poster at thumbnail size.`
