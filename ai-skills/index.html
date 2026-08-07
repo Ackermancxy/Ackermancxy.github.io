@@ -526,8 +526,8 @@
         html: function() {
           return `
             <div><div class="form-section-label">场景</div>
-              <div class="form-group full"><label>场景描述 <span class="hint">— 描述你想处理的照片内容</span></label>
-                <textarea id="gsScene" placeholder="例如：一张第比利斯城市全景照片，前景是教堂塔楼，远处是连绵的山脉和城市建筑，黄昏时分..." required></textarea></div>
+              <div class="form-group full"><label>场景描述 <span class="hint">— 可选，有照片时描述内容</span></label>
+                <textarea id="gsScene" placeholder="可选。有参考图时简单描述场景，没有则留空，只靠参数生成通用 prompt"></textarea></div>
               <div class="form-row" style="margin-top:16px;">
                 <div class="form-group"><label>语言模式 <span class="hint">— 海报文字语言</span></label>
                   <div class="chip-grid" id="gs-lang"></div></div>
@@ -568,7 +568,6 @@
         },
         generate: function() {
           const scene = document.getElementById('gsScene').value.trim();
-          if (!scene) return null;
           const text = document.getElementById('gsText').value.trim();
           const color = COLOR_MAP[window._gsColor || 'cobalt-blue'];
           const paper = PAPER_MAP[window._gsPaper || 'warm-cream'];
@@ -590,7 +589,7 @@
 
           return [
             `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. The composition uses a transformative seam layout: photography occupies about 30-45% of the frame as the factual anchor, and an enlarged illustration field extends across roughly 50-70% of the poster. The eye path enters through the photographic anchor, then moves into the illustrated field and chromatic structure, finally resting in quiet paper.`,
-            `Scene fidelity: preserve the scene identity and core spatial relationships as described: "${scene}". Keep the photographic portion truthful — natural color atmosphere, recognizable geometry, and the defining spatial invariants. The photograph remains the factual anchor.`,
+            `Scene fidelity: ${scene ? `preserve the scene identity and core spatial relationships as described: "${scene}".` : 'preserve the supplied reference photograph as the factual anchor — keep the scene identity, natural color atmosphere, and defining spatial relationships.'} Keep the photographic portion truthful — natural color atmosphere, recognizable geometry, and the defining spatial invariants. The photograph remains the factual anchor.`,
             `Illustration field: use medium abstraction, removing roughly ${absRemove}% of descriptive detail. Merge repeated or adjacent forms into larger masses. Replace realistic shading with flat ink, broken contour, and cut-paper treatment. The illustration reinterprets rather than traces the source.${textLine ? `\n\nMicro-text: ${langMode}. ${textLine}` : `\n\nMicro-text: ${langMode}. Author a compact scene-derived line — a standalone word, keyword sequence, or very short phrase that names the scene's quiet emotional residue rather than metadata.`}\n\nChromatic structure: one added print hue as ${color}, in source-continuation integration mode. The color derives a contour from the source geometry and crosses the photo-paper boundary. It occupies about 3-8% of the poster as an opaque cut-paper or flat printed form.\n\nTorn-paper handoff: a visible hand-torn fibrous edge at the main photo-paper boundary. Irregular contour, narrow exposed-fiber fringe (1-3% of short edge), warm paper-tone interruption. No digital clipping or uniform frame.`,
             `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low contrast. Paper fibers, restrained speckles, and scan noise throughout. The mood is ${moodMap}: a tactile, quiet, non-commercial paper art piece. No 3D, no cinematic lighting, no glossy mockup, no commercial headline hierarchy, no neon, no dense detail. The result must read as a real printed poster at thumbnail size.`
           ].join('\n\n');
@@ -602,8 +601,8 @@
         html: function() {
           return `
             <div><div class="form-section-label">场景</div>
-              <div class="form-group full"><label>照片描述 <span class="hint">— 描述照片的内容和你想表达的情绪</span></label>
-                <textarea id="sdScene" placeholder="例如：雪地中一个穿着红色冬衣的孩子坐在长椅上，周围是光秃的树枝和薄雾，很安静，有些孤独感..." required></textarea></div>
+              <div class="form-group full"><label>照片描述 <span class="hint">— 可选，有照片时描述内容</span></label>
+                <textarea id="sdScene" placeholder="可选。有参考图时简单描述场景，没有则留空，只靠参数生成通用 prompt"></textarea></div>
               <div class="form-group full" style="margin-top:16px;"><label>艺术命题 <span class="hint">— 你想让观者感受到什么</span></label>
                 <input type="text" id="sdProposition" placeholder="例如：渺小的个体在广阔天地间的存在感"></div>
             </div>
@@ -646,7 +645,6 @@
         },
         generate: function() {
           const scene = document.getElementById('sdScene').value.trim();
-          if (!scene) return null;
           const prop = document.getElementById('sdProposition').value.trim();
           const meta = document.getElementById('sdMetaphor').value.trim();
           const text = document.getElementById('sdText').value.trim();
@@ -682,7 +680,7 @@
           return [
             `Expression and visible consequence: ${propLine} The central tension is ${tensionStr}. ${metaLine} Leave one interpretive opening — one relationship deliberately unresolved — so the viewer must complete the meaning.`,
             `Canvas: a vertical 3:5 paper-poster on ${paper}. Full-frame flat scan, no border, no mockup. 70-85% quiet paper. One active illustration cluster occupying about 12-30% of the canvas. Asymmetric composition with figure-ground clarity, directional breathing room, and deliberate eye path: entry through the focal encounter, then movement through negative space to quiet exit.`,
-            `Distilled subject: semantic nucleus extracted from the described scene: "${scene}". Preserve 2-4 source anchors — the core subject, dominant gesture, key spatial relationship, and emotional residue. Discard roughly 70-90% of descriptive detail. Render the illustration using editorial abstraction: simplified masses, broken contours, cut-paper forms, and sparse marks. The final image must contain original illustration, paper, and typography only. Do not reproduce, embed, or retain photographic pixels from the reference.`,
+            `Distilled subject: ${scene ? `semantic nucleus extracted from the described scene: "${scene}".` : 'semantic nucleus extracted from the supplied reference photograph.'} Preserve 2-4 source anchors — the core subject, dominant gesture, key spatial relationship, and emotional residue. Discard roughly 70-90% of descriptive detail. Render the illustration using editorial abstraction: simplified masses, broken contours, cut-paper forms, and sparse marks. The final image must contain original illustration, paper, and typography only. Do not reproduce, embed, or retain photographic pixels from the reference.`,
             `${colorSection}\n\nTransition edge: use natural isolated contour — clean organic silhouettes that meet the paper directly, with faint ink bite or paper grain at the contour. No torn boundary, grayscale rim, or decorative border.\n\nTypography: ${textLine} Treat text as authorial material — it may be tiny, fragmented, oversized, or materially integrated. Use it to expand, redirect, or complicate the image, not to caption what is visible.`,
             `Reproduction: flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. Paper fibers, grain, and subtle print defects. The emotional temperature is ${moodMap}: poetic, tactile, and non-commercial. No photographic or photorealistic regions. No 3D, no cinematic lighting, no glossy mockup, no commercial hierarchy, no dense detail, no decorative motifs. The result must stand as an independent artwork without the source photograph.`
           ].join('\n\n');
