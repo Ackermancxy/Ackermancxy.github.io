@@ -755,11 +755,15 @@
               </div>
             </div>
             <div><div class="form-section-label">文字</div>
+              <div class="form-group full"><label>文字 <span class="hint">— 选择是否包含标题文字</span></label>
+                <div class="chip-grid" id="ae-text-toggle"></div></div>
+              <div id="ae-text-fields" style="transition:opacity 0.3s ease;">
               <div class="form-row">
                 <div class="form-group"><label>标题 <span class="hint">— 可选，留空自动生成</span></label>
                   <input type="text" id="aeTitle" placeholder="留空则自动生成英文标题"></div>
                 <div class="form-group"><label>副标题 <span class="hint">— 可选</span></label>
                   <input type="text" id="aeSubtitle" placeholder="留空则无副标题"></div>
+              </div>
               </div>
             </div>`;
         },
@@ -821,6 +825,24 @@
             });
           });
 
+          buildChips('ae-text-toggle', [
+            { id: 'with-text', label: '包含文字' },
+            { id: 'no-text', label: '不要文字' }
+          ], '_aeTextMode', 'with-text');
+
+          function toggleTextFields(val) {
+            const el = document.getElementById('ae-text-fields');
+            if (!el) return;
+            el.style.opacity = val === 'no-text' ? '0.3' : '1';
+            el.querySelectorAll('input').forEach(inp => inp.disabled = val === 'no-text');
+          }
+          toggleTextFields(window._aeTextMode || 'with-text');
+          document.querySelectorAll('#ae-text-toggle .chip-option').forEach(chip => {
+            chip.addEventListener('click', function() {
+              setTimeout(() => toggleTextFields(window._aeTextMode), 10);
+            });
+          });
+
           window._aeOrient = 'landscape'; window._aeStyle = 'color-blocks';
           window._aePalette = 'from-photo'; window._aeMode = 'diptych';
         },
@@ -832,6 +854,7 @@
           const orient = window._aeOrient || 'landscape';
           const style = window._aeStyle || 'color-blocks';
           const palette = window._aePalette || 'from-photo';
+          const textMode = window._aeTextMode || 'with-text';
 
           const orientMap = {
             'landscape': 'photo area about 38-52% of the final height; abstract panel about 48-62%',
@@ -863,24 +886,26 @@
             : 'The photo is the sole content source.';
 
           if (mode === 'abstract-only') {
-            return [
+            const lines = [
               `Roles: The uploaded image is the sole content source. ${sceneLine} Do NOT include the original photograph in the output. Create only the abstract memory panel derived from the photo's spatial relationships, color hierarchy, and compositional rhythm.`,
               `Canvas: A vertical composition on a continuous neutral ivory background (#F3F0E8). No gradients, grain, texture, or lighting variation. The abstract motif occupies about 30-42% of the panel width and no more than 28-34% of the height, placed in the lower-center or asymmetrically. Keep 65-80% clean white space.`,
               `Abstraction: Use one primary mark family: ${styleMap[style] || styleMap['color-blocks']}. At most two supporting families. Preserve the minimum necessary recognizability — relationships first, contours discarded. Make the abstraction read first as a minimal abstract composition that only on second glance evokes this particular photo.`,
-              `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant role, one dark structural role, one light/neutral role, and at most one or two small accent colors from the photo.`,
-              `Typography: ${titleLine} Set the title on the panel below or beside the motif. Elegant restrained editorial serif. Dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal.`,
-              `Output limits: Only one finished image. No photo, no photo redrawing, no filters, no style transfer, no decorative elements. Clean, editorial, non-commercial.`
-            ].join('\n\n');
+              `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant role, one dark structural role, one light/neutral role, and at most one or two small accent colors from the photo.`
+            ];
+            if (textMode !== 'no-text') lines.push(`Typography: ${titleLine} Set the title on the panel below or beside the motif. Elegant restrained editorial serif. Dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal.`);
+            lines.push(`Output limits: Only one finished image. No photo, no photo redrawing, no filters, no style transfer, no decorative elements. Clean, editorial, non-commercial.`);
+            return lines.join('\n\n');
           }
 
-          return [
+          const lines = [
             `Roles: The uploaded image is the sole content source. ${sceneLine} Faithfully present the photograph in the upper region. Do not redraw, replace, extend, retouch, or change the photo's content. Use the photo's subject relationships, spatial axes, intervals, rhythm, color hierarchy, and negative space to construct the abstract panel.`,
             `Composition: Create a vertical editorial diptych. ${orientMap[orient] || orientMap.landscape}. Join the photo and abstract panel directly with no frame, shadow, mockup, or collage effect. The abstract panel background is a completely even, continuous, neutral ivory (#F3F0E8). No gradients, grain, texture, or lighting variation on the panel.`,
             `Abstraction: Use one primary mark family: ${styleMap[style] || styleMap['color-blocks']}. At most two supporting families from fine lines, short vertical bars, restrained human marks, or repeated rhythm. Preserve the minimum necessary recognizability rather than replicating objects. Default to relationships first, contours discarded. Make the abstraction read first as a minimal abstract composition and only on second glance evoke this particular photo.`,
-            `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant color role, one dark structural role, one light/neutral role, and at most one or two small accent colors. Accent colors must come from the photo. Do not introduce neon, unsupported complements, or competing accents.`,
-            `Typography: ${titleLine} Set the title on the abstract panel only, below or beside the motif. Use an elegant restrained editorial serif. Choose a dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal. Never use pure black or the brightest accent.`,
-            `Output limits: Output only one finished image. No text besides the title. No photo redrawing, no filters, no style transfer, no vector tracing, no decorative elements, no generic icons. The result must be clean, editorial, and non-commercial.`
-          ].join('\n\n');
+            `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant color role, one dark structural role, one light/neutral role, and at most one or two small accent colors. Accent colors must come from the photo. Do not introduce neon, unsupported complements, or competing accents.`
+          ];
+          if (textMode !== 'no-text') lines.push(`Typography: ${titleLine} Set the title on the abstract panel only, below or beside the motif. Use an elegant restrained editorial serif. Choose a dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal. Never use pure black or the brightest accent.`);
+          lines.push(`Output limits: Output only one finished image. No text besides the title. No photo redrawing, no filters, no style transfer, no vector tracing, no decorative elements, no generic icons. The result must be clean, editorial, and non-commercial.`);
+          return lines.join('\n\n');
         }
       }
     };
