@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CXY 的 AI 作图技能收集">
+  <title>AI 技能 · CXY</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">CXY</a>
+      <ul class="nav-links">
+        <li><a href="/">首页</a></li>
+        <li><a href="/photography/">摄影</a></li>
+        <li><a href="/ai-skills/">AI 技能</a></li>
+        <li>
+          <button id="themeToggle" class="theme-toggle" aria-label="切换主题">☀️</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container">
+      <p class="hero-subtitle reveal">AI Skills</p>
+      <h1 class="reveal">AI 作图技能</h1>
+      <p class="reveal">收集、拆解、分享 AI 图像生成的技巧与工作流。</p>
+    </div>
+  </header>
+
+  <!-- Skills Grid -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="skills-grid" id="skillsContainer">
+        <!-- Skills will be rendered here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 CXY · 用光影与代码书写</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    // Skills data
+    const skills = [
+      {
+        title: "复古纸张拼贴",
+        desc: "将照片转为复古纸张质感，记忆拼贴风格。支持自定义纸张纹理、文字排版和做旧效果。",
+        tags: ["风格迁移", "纸张质感", "自定义文字"],
+        interactive: true
+      }
+    ];
+
+    const container = document.getElementById('skillsContainer');
+    skills.forEach(skill => {
+      const card = document.createElement('div');
+      card.className = 'skill-card reveal';
+      card.innerHTML = `
+        <div class="skill-card-tags">
+          ${skill.tags.map(t => `<span>${t}</span>`).join('')}
+          ${skill.interactive ? '<span style="background:var(--accent-1);color:#fff;">可交互</span>' : ''}
+        </div>
+        <h3>${skill.title}</h3>
+        <p>${skill.desc}</p>
+      `;
+      container.appendChild(card);
+    });
+  </script>
+</body>
+</html>
