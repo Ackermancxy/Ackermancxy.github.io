@@ -7,6 +7,171 @@
   <title>AI 技能 · CXY</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <style>
+    /* ---------- Skill Detail / Form ---------- */
+    .skill-detail {
+      display: none;
+      margin-top: 2rem;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    .skill-detail.active { display: block; }
+
+    .skill-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .skill-detail-header h2 { font-size: 1.5rem; }
+    .skill-detail-header .close-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      transition: all var(--transition);
+    }
+    .skill-detail-header .close-btn:hover { color: var(--text); border-color: var(--text-muted); }
+
+    .skill-detail-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    /* ---------- Form ---------- */
+    .prompt-form { display: grid; gap: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .form-group label .hint {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color var(--transition);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-1);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .form-group select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b7b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    /* ---------- Prompt Output ---------- */
+    .prompt-output {
+      margin-top: 24px;
+      display: none;
+    }
+    .prompt-output.active { display: block; }
+
+    .prompt-output textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      resize: vertical;
+    }
+    .prompt-output textarea:focus { outline: none; border-color: var(--accent-1); }
+
+    .prompt-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--accent-1);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #b56a4e; }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--text-muted); color: var(--bg); }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-copy:hover { border-color: var(--accent-1); color: var(--accent-1); }
+    .btn-copy.copied { border-color: #4caf50; color: #4caf50; }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: all 0.4s ease;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .skill-detail { padding: 24px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -37,11 +202,140 @@
   <!-- Skills Grid -->
   <section class="section" style="padding-top:0;">
     <div class="container">
-      <div class="skills-grid" id="skillsContainer">
-        <!-- Skills will be rendered here -->
+      <div class="skills-grid" id="skillsContainer"></div>
+
+      <!-- Skill Detail / Interactive Form -->
+      <div class="skill-detail" id="skillDetail">
+        <div class="skill-detail-header">
+          <div>
+            <h2 id="detailTitle">GC Minimal Zine Poster</h2>
+            <div class="skill-card-tags" id="detailTags" style="margin-top:8px;"></div>
+          </div>
+          <button class="close-btn" id="closeDetail" title="收起">✕</button>
+        </div>
+        <p class="skill-detail-desc" id="detailDesc">
+          将主题、句子、物件、情绪或文章构想，转化为一张安静、极简的 ZINE 风格海报提示词。
+          3:5 仿旧纸张画布，大量留白，一个小型视觉主体，一颗高饱和度色彩锚点。
+        </p>
+
+        <form class="prompt-form" id="promptForm">
+          <div class="form-row">
+            <div class="form-group full">
+              <label>主题 / 主体 <span class="hint">— 海报的核心内容，如"雨天的旧书店"</span></label>
+              <input type="text" id="fSubject" placeholder="例如：雨天的旧书店、海边黄昏、一只旧皮箱..." required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>海报文字 <span class="hint">（可选）</span></label>
+              <input type="text" id="fText" placeholder="出现在海报上的短句">
+            </div>
+            <div class="form-group">
+              <label>强调色 <span class="hint">— 高饱和度色彩锚点</span></label>
+              <select id="fColor">
+                <option value="cobalt-blue">钴蓝 (Cobalt Blue)</option>
+                <option value="ultramarine">群青 (Ultramarine)</option>
+                <option value="cyan">青色 (Cyan)</option>
+                <option value="violet">紫罗兰 (Violet)</option>
+                <option value="magenta-pink">品红 (Magenta Pink)</option>
+                <option value="lemon-yellow">柠檬黄 (Lemon Yellow)</option>
+                <option value="pear-green">梨绿 (Pear Green)</option>
+                <option value="orange" selected>橙色 (Orange)</option>
+                <option value="tomato-red">番茄红 (Tomato Red)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>布局风格</label>
+              <select id="fLayout">
+                <option value="center-fragment">居中碎片 (Center Fragment)</option>
+                <option value="lower-left-float">左下浮动 (Lower-left Float)</option>
+                <option value="upper-right-block">右上区块 (Upper-right Block)</option>
+                <option value="dual-panel" selected>双面板 (Dual Panel)</option>
+                <option value="irregular-cutout">不规则剪裁 (Irregular Cutout)</option>
+                <option value="type-led">文字主导 (Type-led)</option>
+                <option value="single-specimen">单一标本 (Single Specimen)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>图像锚点</label>
+              <select id="fAnchor">
+                <option value="tiny-faded-photo">微小褪色照片</option>
+                <option value="torn-paper-clipping">撕纸剪报</option>
+                <option value="flat-silhouette" selected>扁平剪影</option>
+                <option value="solid-color-block">纯色色块</option>
+                <option value="old-printed-illustration">旧印刷插图</option>
+                <option value="object-specimen">物件标本</option>
+                <option value="translucent-geometric">半透明几何叠层</option>
+                <option value="abstract-texture">抽象纹理窗口</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>情绪氛围</label>
+              <select id="fMood">
+                <option value="quiet" selected>安静 (Quiet)</option>
+                <option value="summer">夏日 (Summer)</option>
+                <option value="solitude">孤独 (Solitude)</option>
+                <option value="childhood">童年 (Childhood)</option>
+                <option value="seaside">海边 (Seaside)</option>
+                <option value="afternoon">午后 (Afternoon)</option>
+                <option value="night">夜晚 (Night)</option>
+                <option value="memory">记忆 (Memory)</option>
+                <option value="slight-surrealism">超现实 (Surrealism)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>纹理质感</label>
+              <select id="fTexture">
+                <option value="xerox-softness">复印柔化 (Xerox Softness)</option>
+                <option value="risograph-grain" selected>孔版印刷颗粒 (Risograph Grain)</option>
+                <option value="letterpress-ink-bleed">凸版油墨晕染 (Letterpress)</option>
+                <option value="halftone-degradation">网点退化 (Halftone)</option>
+                <option value="film-grain">胶片颗粒 (Film Grain)</option>
+                <option value="scan-noise">扫描噪点 (Scan Noise)</option>
+                <option value="aged-paper-mottling">仿旧纸张斑驳 (Aged Paper)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>纸张色调</label>
+              <select id="fPaper">
+                <option value="warm-cream" selected>暖白 (Warm Cream)</option>
+                <option value="cool-gray">冷灰 (Cool Gray)</option>
+                <option value="ivory">象牙白 (Ivory)</option>
+                <option value="beige">米色 (Beige)</option>
+                <option value="light-ochre">浅赭 (Light Ochre)</option>
+                <option value="faded-newsprint">褪色新闻纸 (Newsprint)</option>
+              </select>
+            </div>
+            <div class="form-group" style="justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary" style="width:100%;margin-top:auto;">✨ 生成 Prompt</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="prompt-output" id="promptOutput">
+          <label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:8px;">生成的 Prompt</label>
+          <textarea id="promptResult" readonly></textarea>
+          <div class="prompt-actions">
+            <button class="btn btn-copy" id="copyBtn">📋 复制</button>
+            <button class="btn btn-secondary" id="regenerateBtn">🔄 重新生成</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
   <!-- Footer -->
   <footer class="footer">
@@ -52,30 +346,201 @@
 
   <script src="/js/main.js"></script>
   <script>
-    // Skills data
-    const skills = [
-      {
-        title: "复古纸张拼贴",
-        desc: "将照片转为复古纸张质感，记忆拼贴风格。支持自定义纸张纹理、文字排版和做旧效果。",
-        tags: ["风格迁移", "纸张质感", "自定义文字"],
-        interactive: true
-      }
-    ];
+    // =============================================
+    // Skills Data
+    // =============================================
+    const skills = [{
+      id: 'zine-poster',
+      title: 'GC Minimal Zine Poster',
+      desc: '将主题、句子、物件、情绪或文章构想，转化为一张安静、极简的 ZINE 风格海报提示词。3:5 仿旧纸张画布，大量留白，一个小型视觉主体，一颗高饱和度色彩锚点。',
+      tags: ['ZINE 风格', '极简海报', '纸张质感', '留白构图'],
+      detailed: true
+    }];
 
+    // =============================================
+    // Prompt Generator
+    // =============================================
+    const COLOR_MAP = {
+      'cobalt-blue': 'fully saturated cobalt-blue',
+      'ultramarine': 'opaque ultramarine',
+      'cyan': 'vivid cyan',
+      'violet': 'deep violet',
+      'magenta-pink': 'bright magenta-pink',
+      'lemon-yellow': 'pure lemon-yellow',
+      'pear-green': 'vivid pear-green',
+      'orange': 'warm saturated orange',
+      'tomato-red': 'clean tomato-red'
+    };
+
+    const PAPER_MAP = {
+      'warm-cream': 'warm cream aged paper',
+      'cool-gray': 'cool gray aged paper',
+      'ivory': 'ivory-toned vintage paper',
+      'beige': 'beige antique paper',
+      'light-ochre': 'light ochre aged paper',
+      'faded-newsprint': 'faded newsprint paper'
+    };
+
+    function generatePrompt(data) {
+      const color = COLOR_MAP[data.color] || data.color;
+      const paper = PAPER_MAP[data.paper] || data.paper;
+      const subject = data.subject;
+      const text = data.text || '';
+      const layout = data.layout;
+      const anchor = data.anchor;
+      const mood = data.mood;
+      const texture = data.texture;
+
+      // Paragraph 1: canvas + paper + negative space + cluster size/location
+      const layoutDesc = {
+        'center-fragment': 'A tiny central visual cluster occupying about 12% of the frame, surrounded by vast empty space.',
+        'lower-left-float': 'A small anchor in the lower-left quadrant, with abundant empty space above and to the right.',
+        'upper-right-block': 'A small color/photo block in the upper-right region, with loose text drifting in the remaining space.',
+        'dual-panel': 'Two small overlapping or adjacent panels with a narrow gap, creating a quiet diptych rhythm.',
+        'irregular-cutout': 'A torn or organic paper shape carrying the image, with rough edges against the paper void.',
+        'type-led': 'Typography is the primary visual anchor; the image element is secondary or minimal.',
+        'single-specimen': 'One isolated object or mark placed as a specimen, with almost no support graphics.'
+      }[layout] || 'A small visual cluster occupying about 15% of the canvas, placed with generous negative space.';
+
+      const p1 = `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. 70% to 90% of the canvas is empty paper. ${layoutDesc}`;
+
+      // Paragraph 2: subject + anchor type + treatment
+      const anchorDesc = {
+        'tiny-faded-photo': `a tiny faded black-and-white photograph of ${subject}, with softened edges and low contrast, appearing as a found archival print`,
+        'torn-paper-clipping': `a torn-paper clipping featuring ${subject}, with rough deckled edges and a slightly yellowed paper fragment`,
+        'flat-silhouette': `a flat silhouette of ${subject}, rendered as a solid cutout with clean edges against the paper void`,
+        'solid-color-block': `a solid color block in the shape or suggestion of ${subject}, acting as a bold graphic anchor`,
+        'old-printed-illustration': `an old printed illustration of ${subject}, with visible halftone dots and ink fading from age`,
+        'object-specimen': `a single specimen of ${subject}, isolated like a museum object with a subtle shadow or pin`,
+        'translucent-geometric': `a translucent geometric overlay suggesting ${subject}, with layered semi-opaque shapes`,
+        'abstract-texture': `an abstract texture window evoking ${subject}, with organic marks and rubbed ink`
+      }[anchor] || `a small visual representation of ${subject}`;
+
+      const p2 = `The image anchor is ${anchorDesc}. The anchor treatment uses low-contrast photocopy softness, with subtle ink bleed and a slightly misregistered feel that makes it belong to the paper.`;
+
+      // Paragraph 3: typography + accent color + print defects
+      const textLine = text
+        ? `A short readable phrase: "${text}". `
+        : `A short poetic phrase related to "${subject}" appears as small serif type. `;
+
+      const p3 = `${textLine}Small serif or typewriter typography, set in a sparse arrangement. The single high-chroma accent is ${color}, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size. Print defects include ${texture.replace(/-/g, ' ')}, with subtle scan noise and paper fiber texture throughout.`;
+
+      // Paragraph 4: flat scan mood + avoid-list
+      const moodMap = {
+        'quiet': 'quiet, contemplative, sparse, diary-like',
+        'summer': 'warm, nostalgic summer, hazy afternoon light',
+        'solitude': 'solitary, introspective, distant, meditative',
+        'childhood': 'childhood memory, nostalgic, faded, tender',
+        'seaside': 'seaside atmosphere, salt air, coastal quiet',
+        'afternoon': 'lazy afternoon, warm light, stillness',
+        'night': 'nocturnal, hushed, dim, shadowy, lunar',
+        'memory': 'memory-like, archival, distant, ephemeral',
+        'slight-surrealism': 'slightly surreal, dream-adjacent, uncanny quiet'
+      }[mood] || 'quiet, poetic, archival';
+
+      const p4 = `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. The overall mood is ${moodMap}: a Japanese/Korean indie zine or minimal editorial poster. No full-bleed scene, no commercial headline, no glossy mockup, no 3D, no cinematic lighting, no neon, no dense composition, no long clean text blocks.`;
+
+      return [p1, p2, p3, p4].join('\n\n');
+    }
+
+    // =============================================
+    // UI Logic
+    // =============================================
     const container = document.getElementById('skillsContainer');
+    const detail = document.getElementById('skillDetail');
+    const closeBtn = document.getElementById('closeDetail');
+    const form = document.getElementById('promptForm');
+    const output = document.getElementById('promptOutput');
+    const result = document.getElementById('promptResult');
+    const copyBtn = document.getElementById('copyBtn');
+    const regenBtn = document.getElementById('regenerateBtn');
+    const toast = document.getElementById('toast');
+
+    // Render skill cards
     skills.forEach(skill => {
       const card = document.createElement('div');
       card.className = 'skill-card reveal';
+      card.style.cursor = 'pointer';
       card.innerHTML = `
         <div class="skill-card-tags">
           ${skill.tags.map(t => `<span>${t}</span>`).join('')}
-          ${skill.interactive ? '<span style="background:var(--accent-1);color:#fff;">可交互</span>' : ''}
+          ${skill.detailed ? '<span style="background:var(--accent-1);color:#fff;">可交互</span>' : ''}
         </div>
         <h3>${skill.title}</h3>
         <p>${skill.desc}</p>
+        <span class="card-link">试试生成 →</span>
       `;
+      card.addEventListener('click', () => openSkill(skill));
       container.appendChild(card);
     });
+
+    function openSkill(skill) {
+      document.getElementById('detailTitle').textContent = skill.title;
+      document.getElementById('detailTags').innerHTML = skill.tags.map(t => `<span>${t}</span>`).join('');
+      document.getElementById('detailDesc').textContent = skill.desc;
+      detail.classList.add('active');
+      output.classList.remove('active');
+      detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    closeBtn.addEventListener('click', () => {
+      detail.classList.remove('active');
+      output.classList.remove('active');
+    });
+
+    // Form submit
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = {
+        subject: document.getElementById('fSubject').value.trim(),
+        text: document.getElementById('fText').value.trim(),
+        color: document.getElementById('fColor').value,
+        layout: document.getElementById('fLayout').value,
+        anchor: document.getElementById('fAnchor').value,
+        mood: document.getElementById('fMood').value,
+        texture: document.getElementById('fTexture').value,
+        paper: document.getElementById('fPaper').value
+      };
+      if (!data.subject) {
+        document.getElementById('fSubject').focus();
+        showToast('请填写主题/主体');
+        return;
+      }
+      const prompt = generatePrompt(data);
+      result.value = prompt;
+      output.classList.add('active');
+      copyBtn.textContent = '📋 复制';
+      copyBtn.classList.remove('copied');
+      result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // Regenerate (same params)
+    regenBtn.addEventListener('click', () => {
+      form.dispatchEvent(new Event('submit'));
+    });
+
+    // Copy
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(result.value);
+        copyBtn.textContent = '✅ 已复制';
+        copyBtn.classList.add('copied');
+        showToast('Prompt 已复制到剪贴板');
+      } catch {
+        // Fallback
+        result.select();
+        document.execCommand('copy');
+        copyBtn.textContent = '✅ 已复制';
+        copyBtn.classList.add('copied');
+      }
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
+    }
   </script>
 </body>
 </html>
