@@ -269,7 +269,7 @@
         desc: '保留照片原片作为上方摄影区域，在下方创建仅从照片空间关系、色彩和节奏推导出的极简抽象记忆面板，搭配诗意英文标题。干净、竖向、编辑感。',
         tags: ['摄影保留', '抽象面板', '编辑风格', '极简'],
         img: 'abstract-editorial-card.jpg',
-        banner: 'abstract-editorial-card.jpg'
+        banner: 'abstract-editorial-2.jpg'
       }
     ];
 
@@ -728,9 +728,9 @@
               .orient-option .label { font-size: 0.65rem; color: var(--text-muted); line-height: 1.2; margin-top: 4px; }
               .orient-option.selected .label { color: var(--text); font-weight: 600; }
 
-              .orient-section { transition: all 0.4s ease; overflow: hidden; }
-              .orient-section.collapsed { max-height: 0; opacity: 0; margin: 0; pointer-events: none; }
-              .orient-section.expanded { max-height: 300px; opacity: 1; }
+              .orient-section { overflow: hidden; transition: all 0.4s ease; }
+              .orient-section.collapsed { display: none; }
+              .orient-section.expanded { display: block; }
             </style>
             <div><div class="form-section-label">模式</div>
               <div class="form-group full"><label>是否拼接原图 <span class="hint">— 选择是否将照片与抽象面板拼接</span></label>
@@ -983,6 +983,13 @@
       clearTimeout(toast._timer);
       toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
     }
+
+    window.toggleOrientSection = function(mode) {
+      const section = document.getElementById('ae-orient-section');
+      if (!section) return;
+      section.classList.toggle('collapsed', mode !== 'diptych');
+      section.classList.toggle('expanded', mode === 'diptych');
+    };
   </script>
 </body>
 </html>
