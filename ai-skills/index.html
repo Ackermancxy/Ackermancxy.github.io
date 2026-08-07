@@ -885,6 +885,8 @@
             ? `The photo depicts: "${scene}".`
             : 'The photo is the sole content source.';
 
+          const noTextLine = 'Output limits: Output only one finished image. Absolutely no text, no title, no typography, no subtitle, no numbers, no signatures, no watermarks. No photo redrawing, no filters, no style transfer, no vector tracing, no decorative elements, no generic icons. The result must be clean, editorial, and non-commercial.';
+
           if (mode === 'abstract-only') {
             const lines = [
               `Roles: The uploaded image is the sole content source. ${sceneLine} Do NOT include the original photograph in the output. Create only the abstract memory panel derived from the photo's spatial relationships, color hierarchy, and compositional rhythm.`,
@@ -892,8 +894,15 @@
               `Abstraction: Use one primary mark family: ${styleMap[style] || styleMap['color-blocks']}. At most two supporting families. Preserve the minimum necessary recognizability — relationships first, contours discarded. Make the abstraction read first as a minimal abstract composition that only on second glance evokes this particular photo.`,
               `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant role, one dark structural role, one light/neutral role, and at most one or two small accent colors from the photo.`
             ];
-            if (textMode !== 'no-text') lines.push(`Typography: ${titleLine} Set the title on the panel below or beside the motif. Elegant restrained editorial serif. Dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal.`);
-            lines.push(`Output limits: Only one finished image. No photo, no photo redrawing, no filters, no style transfer, no decorative elements. Clean, editorial, non-commercial.`);
+            if (textMode !== 'no-text') {
+              const titleLine = title
+                ? `Use the exact title: "${title}"${subtitle ? ` with subtitle: "${subtitle}"` : '. No subtitle.'}`
+                : `Create one original English title of 2-5 words grounded in visual facts${subtitle ? `, with subtitle: "${subtitle}"` : '. No subtitle.'}`;
+              lines.push(`Typography: ${titleLine} Set the title on the panel below or beside the motif. Elegant restrained editorial serif. Dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal.`);
+              lines.push('Output limits: Only one finished image. Apart from the final title, absolutely no text, numbers, dates, signatures, logos, or watermarks. No photo, no photo redrawing, no filters, no style transfer, no decorative elements. Clean, editorial, non-commercial.');
+            } else {
+              lines.push(noTextLine);
+            }
             return lines.join('\n\n');
           }
 
@@ -903,8 +912,15 @@
             `Abstraction: Use one primary mark family: ${styleMap[style] || styleMap['color-blocks']}. At most two supporting families from fine lines, short vertical bars, restrained human marks, or repeated rhythm. Preserve the minimum necessary recognizability rather than replicating objects. Default to relationships first, contours discarded. Make the abstraction read first as a minimal abstract composition and only on second glance evoke this particular photo.`,
             `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant color role, one dark structural role, one light/neutral role, and at most one or two small accent colors. Accent colors must come from the photo. Do not introduce neon, unsupported complements, or competing accents.`
           ];
-          if (textMode !== 'no-text') lines.push(`Typography: ${titleLine} Set the title on the abstract panel only, below or beside the motif. Use an elegant restrained editorial serif. Choose a dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal. Never use pure black or the brightest accent.`);
-          lines.push(`Output limits: Output only one finished image. No text besides the title. No photo redrawing, no filters, no style transfer, no vector tracing, no decorative elements, no generic icons. The result must be clean, editorial, and non-commercial.`);
+          if (textMode !== 'no-text') {
+            const titleLine = title
+              ? `Use the exact title: "${title}"${subtitle ? ` with subtitle: "${subtitle}"` : '. No subtitle.'}`
+              : `Create one original English title of 2-5 words grounded in visual facts${subtitle ? `, with subtitle: "${subtitle}"` : '. No subtitle.'}`;
+            lines.push(`Typography: ${titleLine} Set the title on the abstract panel only, below or beside the motif. Use an elegant restrained editorial serif. Choose a dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal. Never use pure black or the brightest accent.`);
+            lines.push('Output limits: Output only one finished image. Apart from the final title, absolutely no text, numbers, dates, signatures, logos, or watermarks. No photo redrawing, no filters, no style transfer, no vector tracing, no decorative elements, no generic icons. The result must be clean, editorial, and non-commercial.');
+          } else {
+            lines.push(noTextLine);
+          }
           return lines.join('\n\n');
         }
       }
