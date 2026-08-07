@@ -262,6 +262,14 @@
         tags: ['影像蒸馏', '情绪叙事', '自由创作', '视觉隐喻'],
         img: 'distillation-1.jpg',
         banner: 'distillation-2.jpg'
+      },
+      {
+        id: 'photo-abstract-editorial',
+        title: '抽象编辑 · Photo Abstract Editorial',
+        desc: '保留照片原片作为上方摄影区域，在下方创建仅从照片空间关系、色彩和节奏推导出的极简抽象记忆面板，搭配诗意英文标题。干净、竖向、编辑感。',
+        tags: ['摄影保留', '抽象面板', '编辑风格', '极简'],
+        img: 'abstract-editorial-1.jpg',
+        banner: 'abstract-editorial-2.jpg'
       }
     ];
 
@@ -683,6 +691,101 @@
             `Distilled subject: ${scene ? `semantic nucleus extracted from the described scene: "${scene}".` : 'semantic nucleus extracted from the supplied reference photograph.'} Preserve 2-4 source anchors — the core subject, dominant gesture, key spatial relationship, and emotional residue. Discard roughly 70-90% of descriptive detail. Render the illustration using editorial abstraction: simplified masses, broken contours, cut-paper forms, and sparse marks. The final image must contain original illustration, paper, and typography only. Do not reproduce, embed, or retain photographic pixels from the reference.`,
             `${colorSection}\n\nTransition edge: use natural isolated contour — clean organic silhouettes that meet the paper directly, with faint ink bite or paper grain at the contour. No torn boundary, grayscale rim, or decorative border.\n\nTypography: ${textLine} Treat text as authorial material — it may be tiny, fragmented, oversized, or materially integrated. Use it to expand, redirect, or complicate the image, not to caption what is visible.`,
             `Reproduction: flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. Paper fibers, grain, and subtle print defects. The emotional temperature is ${moodMap}: poetic, tactile, and non-commercial. No photographic or photorealistic regions. No 3D, no cinematic lighting, no glossy mockup, no commercial hierarchy, no dense detail, no decorative motifs. The result must stand as an independent artwork without the source photograph.`
+          ].join('\n\n');
+        }
+      },
+
+      'photo-abstract-editorial': {
+        html: function() {
+          return `
+            <div><div class="form-section-label">照片</div>
+              <div class="form-group full"><label>照片描述 <span class="hint">— 可选，描述照片内容以优化抽象面板</span></label>
+                <textarea id="aeScene" placeholder="可选。描述照片中的主体、空间关系、光线和情绪"></textarea></div>
+            </div>
+            <div><div class="form-section-label">构图</div>
+              <div class="form-row">
+                <div class="form-group"><label>照片方向 <span class="hint">— 决定照片/面板比例</span></label>
+                  <div class="chip-grid" id="ae-orientation"></div></div>
+                <div class="form-group"><label>抽象标记风格</label>
+                  <div class="chip-grid" id="ae-style"></div></div>
+              </div>
+            </div>
+            <div><div class="form-section-label">色彩与文字</div>
+              <div class="form-row">
+                <div class="form-group"><label>色彩倾向</label>
+                  <div class="chip-grid" id="ae-palette"></div></div>
+                <div class="form-group"><label>标题文字 <span class="hint">— 可选，留空自动生成</span></label>
+                  <input type="text" id="aeTitle" placeholder="留空则自动生成英文标题"></div>
+              </div>
+              <div class="form-group full" style="margin-top:16px;"><label>副标题 <span class="hint">— 可选</span></label>
+                <input type="text" id="aeSubtitle" placeholder="留空则无副标题"></div>
+            </div>`;
+        },
+        init: function() {
+          buildChips('ae-orientation', [
+            { id: 'landscape', label: '横向 — 风景/水平延展' },
+            { id: 'portrait', label: '纵向 — 建筑/人物' },
+            { id: 'square', label: '均衡 — 接近方形' }
+          ], '_aeOrient', 'landscape');
+          buildChips('ae-style', [
+            { id: 'color-blocks', label: '色块 (Color Blocks)' },
+            { id: 'soft-organic', label: '柔和有机 (Soft Organic)' },
+            { id: 'arcing-strokes', label: '弧形笔触 (Arcing Strokes)' },
+            { id: 'stacked-bands', label: '层叠色带 (Stacked Bands)' },
+            { id: 'architectural', label: '建筑质量 (Architectural)' }
+          ], '_aeStyle', 'color-blocks');
+          buildChips('ae-palette', [
+            { id: 'warm', label: '暖调' },
+            { id: 'cool', label: '冷调' },
+            { id: 'neutral', label: '中性' },
+            { id: 'from-photo', label: '从照片提取' }
+          ], '_aePalette', 'from-photo');
+          window._aeOrient = 'landscape'; window._aeStyle = 'color-blocks'; window._aePalette = 'from-photo';
+        },
+        generate: function() {
+          const scene = document.getElementById('aeScene').value.trim();
+          const title = document.getElementById('aeTitle').value.trim();
+          const subtitle = document.getElementById('aeSubtitle').value.trim();
+          const orient = window._aeOrient || 'landscape';
+          const style = window._aeStyle || 'color-blocks';
+          const palette = window._aePalette || 'from-photo';
+
+          const orientMap = {
+            'landscape': 'photo area about 38-52% of the final height; abstract panel about 48-62%',
+            'portrait': 'photo area about 55-68% of the final height; abstract panel about 32-45%',
+            'square': 'photo area about 48-58% of the final height; abstract panel about 42-52%'
+          };
+
+          const styleMap = {
+            'color-blocks': 'flat or slightly organic color blocks',
+            'soft-organic': 'soft circular or irregular organic masses',
+            'arcing-strokes': 'arcing or tapered brush-like strokes',
+            'stacked-bands': 'continuous short bars or stacked color bands',
+            'architectural': 'simplified architectural masses with restrained geometric clarity'
+          };
+
+          const paletteMap = {
+            'warm': 'a warm-toned palette with restrained ochre, terracotta, and muted amber',
+            'cool': 'a cool-toned palette with restrained slate blue, sage, and muted gray',
+            'neutral': 'a restrained neutral palette of warm grays, charcoal, and ivory',
+            'from-photo': 'colors extracted from the source photograph, lowered in saturation and reduced in number'
+          };
+
+          const titleLine = title
+            ? `Use the exact title: "${title}"${subtitle ? ` with subtitle: "${subtitle}"` : '. No subtitle.'}`
+            : `Create one original English title of 2-5 words grounded in visual facts${subtitle ? `, with subtitle: "${subtitle}"` : '. No subtitle.'}`;
+
+          const sceneLine = scene
+            ? `The photo depicts: "${scene}".`
+            : 'The photo is the sole content source.';
+
+          return [
+            `Roles: The uploaded image is the sole content source. ${sceneLine} Faithfully present the photograph in the upper region. Do not redraw, replace, extend, retouch, or change the photo's content. Use the photo's subject relationships, spatial axes, intervals, rhythm, color hierarchy, and negative space to construct the abstract panel.`,
+            `Composition: Create a vertical editorial diptych. ${orientMap[orient] || orientMap.landscape}. Join the photo and abstract panel directly with no frame, shadow, mockup, or collage effect. The abstract panel background is a completely even, continuous, neutral ivory (#F3F0E8). No gradients, grain, texture, or lighting variation on the panel.`,
+            `Abstraction: Use one primary mark family: ${styleMap[style] || styleMap['color-blocks']}. At most two supporting families from fine lines, short vertical bars, restrained human marks, or repeated rhythm. Preserve the minimum necessary recognizability rather than replicating objects. Default to relationships first, contours discarded. Make the abstraction read first as a minimal abstract composition and only on second glance evoke this particular photo.`,
+            `Color: ${paletteMap[palette] || paletteMap['from-photo']}. Use one dominant color role, one dark structural role, one light/neutral role, and at most one or two small accent colors. Accent colors must come from the photo. Do not introduce neon, unsupported complements, or competing accents.`,
+            `Typography: ${titleLine} Set the title on the abstract panel only, below or beside the motif. Use an elegant restrained editorial serif. Choose a dark restrained color from the photo — deep blue-gray, dark green, wine red, or charcoal. Never use pure black or the brightest accent.`,
+            `Output limits: Output only one finished image. No text besides the title. No photo redrawing, no filters, no style transfer, no vector tracing, no decorative elements, no generic icons. The result must be clean, editorial, and non-commercial.`
           ].join('\n\n');
         }
       }
