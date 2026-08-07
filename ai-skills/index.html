@@ -731,10 +731,12 @@
               .orient-section { overflow: hidden; transition: all 0.4s ease; }
               .orient-section.collapsed { display: none; }
               .orient-section.expanded { display: block; }
+              .chip-grid + .chip-hint { margin-top: 6px; }
             </style>
             <div><div class="form-section-label">模式</div>
               <div class="form-group full"><label>是否拼接原图 <span class="hint">— 选择是否将照片与抽象面板拼接</span></label>
-                <div class="chip-grid" id="ae-mode"></div></div>
+                <div class="chip-grid" id="ae-mode"></div>
+                <div class="chip-hint" id="ae-mode-hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">拼接：照片 + 抽象面板 &nbsp;·&nbsp; 仅抽象面板：不包含照片</div></div>
             </div>
             <div class="orient-section expanded" id="ae-orient-section">
               <div><div class="form-section-label">构图</div>
@@ -764,8 +766,8 @@
         init: function() {
           // Mode toggle
           buildChips('ae-mode', [
-            { id: 'diptych', label: '拼接 — 照片 + 抽象面板' },
-            { id: 'abstract-only', label: '仅抽象面板 — 不包含照片' }
+            { id: 'diptych', label: '拼接' },
+            { id: 'abstract-only', label: '仅抽象面板' }
           ], '_aeMode', 'diptych');
 
           // Orientation diagrams
