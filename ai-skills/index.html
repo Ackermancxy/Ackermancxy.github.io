@@ -8,19 +8,13 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
   <style>
-    /* ============ Skill Card with Image ============ */
+    /* ============ Skill Card ============ */
     .skill-card { padding: 0; overflow: hidden; }
     .skill-card-img {
-      width: 100%;
-      aspect-ratio: 3/4;
-      overflow: hidden;
-      background: var(--border);
+      width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--border);
     }
     .skill-card-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
       transition: transform 0.6s ease;
     }
     .skill-card:hover .skill-card-img img { transform: scale(1.05); }
@@ -29,36 +23,21 @@
 
     /* ============ Skill Detail ============ */
     .skill-detail {
-      display: none;
-      margin-top: 2rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
+      display: none; margin-top: 2rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
     }
     .skill-detail.active { display: block; }
-
     .skill-detail-banner {
-      width: 100%;
-      aspect-ratio: 3/1;
-      overflow: hidden;
-      background: var(--border);
+      width: 100%; aspect-ratio: 3/1; overflow: hidden; background: var(--border);
     }
     .skill-detail-banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
-
     .skill-detail-body { padding: 32px 40px 40px; }
     @media (max-width: 640px) { .skill-detail-body { padding: 20px 24px 24px; } }
 
     .skill-detail-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.75rem;
+      display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;
     }
     .skill-detail-header h2 { font-size: 1.5rem; }
     .skill-detail-header .close-btn {
@@ -67,57 +46,40 @@
       color: var(--text-muted); transition: all var(--transition); flex-shrink: 0;
     }
     .skill-detail-header .close-btn:hover { color: var(--text); border-color: var(--text-muted); }
+    .skill-detail-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.7; }
 
-    .skill-detail-desc {
-      color: var(--text-muted); font-size: 0.95rem;
-      margin-bottom: 2rem; line-height: 1.7;
-    }
-
-    /* ============ Visual Form ============ */
+    /* ============ Form ============ */
     .prompt-form { display: grid; gap: 28px; }
-
     .form-section-label {
       font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em;
       color: var(--text-muted); font-weight: 600;
       border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 16px;
     }
-
     .form-group { display: flex; flex-direction: column; gap: 8px; }
     .form-group label {
       font-size: 0.85rem; font-weight: 600; color: var(--text);
     }
-    .form-group label .hint {
-      font-weight: 400; color: var(--text-muted); font-size: 0.78rem;
-    }
+    .form-group label .hint { font-weight: 400; color: var(--text-muted); font-size: 0.78rem; }
     .form-group input, .form-group textarea {
       padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
       background: var(--bg); color: var(--text); font-size: 0.9rem;
       font-family: inherit; transition: border-color var(--transition);
     }
-    .form-group input:focus, .form-group textarea:focus {
-      outline: none; border-color: var(--accent-1);
-    }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-1); }
     .form-group textarea { resize: vertical; min-height: 80px; }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .form-group.full { grid-column: 1 / -1; }
     @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
 
-    /* ============ Color Swatches ============ */
-    .color-swatches {
-      display: flex; flex-wrap: wrap; gap: 10px;
-    }
+    /* ============ Visual Selectors ============ */
+    .color-swatches { display: flex; flex-wrap: wrap; gap: 10px; }
     .color-swatch {
-      width: 36px; height: 36px; border-radius: 50%;
-      cursor: pointer; border: 3px solid transparent;
-      transition: all var(--transition); position: relative;
-      flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      border: 3px solid transparent; transition: all var(--transition);
+      flex-shrink: 0; position: relative;
     }
     .color-swatch:hover { transform: scale(1.15); }
-    .color-swatch.selected {
-      border-color: var(--text);
-      box-shadow: 0 0 0 2px var(--bg-card);
-    }
+    .color-swatch.selected { border-color: var(--text); box-shadow: 0 0 0 2px var(--bg-card); }
     .color-swatch .tooltip {
       position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
       font-size: 0.65rem; color: var(--text-muted); white-space: nowrap;
@@ -125,11 +87,18 @@
     }
     .color-swatch:hover .tooltip { opacity: 1; }
 
-    /* ============ Layout Selector ============ */
-    .layout-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 10px;
+    .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip-option {
+      cursor: pointer; border: 2px solid var(--border); border-radius: 20px;
+      padding: 7px 16px; font-size: 0.82rem; color: var(--text-muted);
+      transition: all var(--transition); background: var(--bg);
     }
+    .chip-option:hover { border-color: var(--text-muted); color: var(--text); }
+    .chip-option.selected {
+      border-color: var(--accent-1); background: var(--bg-card); color: var(--text); font-weight: 600;
+    }
+
+    .layout-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .layout-option {
       cursor: pointer; border: 2px solid var(--border); border-radius: 10px;
       padding: 10px 8px 8px; text-align: center;
@@ -137,31 +106,17 @@
     }
     .layout-option:hover { border-color: var(--text-muted); }
     .layout-option.selected { border-color: var(--accent-1); background: var(--bg-card); }
-
     .layout-diagram {
-      width: 100%; aspect-ratio: 3/4;
-      background: var(--border); border-radius: 4px; margin-bottom: 6px;
-      position: relative; overflow: hidden;
+      width: 100%; aspect-ratio: 3/4; background: var(--border); border-radius: 4px;
+      margin-bottom: 6px; position: relative; overflow: hidden;
     }
     .layout-diagram .dot {
-      position: absolute; border-radius: 2px;
-      background: var(--accent-1); opacity: 0.8;
+      position: absolute; border-radius: 2px; background: var(--accent-1); opacity: 0.8;
     }
-    .layout-diagram .dot.color-block { opacity: 0.5; }
-    .layout-diagram .line {
-      position: absolute; height: 1px; background: var(--text-muted); opacity: 0.5;
-    }
-
-    .layout-option .label {
-      font-size: 0.7rem; color: var(--text-muted); line-height: 1.2;
-    }
+    .layout-option .label { font-size: 0.7rem; color: var(--text-muted); line-height: 1.2; }
     .layout-option.selected .label { color: var(--text); font-weight: 600; }
 
-    /* ============ Anchor Selector ============ */
-    .anchor-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 8px;
-    }
+    .anchor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
     .anchor-option {
       cursor: pointer; border: 2px solid var(--border); border-radius: 10px;
       padding: 12px 8px; text-align: center;
@@ -173,24 +128,21 @@
     .anchor-option .label { font-size: 0.65rem; color: var(--text-muted); line-height: 1.2; }
     .anchor-option.selected .label { color: var(--text); font-weight: 600; }
 
-    /* ============ Mood / Texture / Paper Selector ============ */
-    .chip-grid {
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .chip-option {
-      cursor: pointer; border: 2px solid var(--border); border-radius: 20px;
-      padding: 7px 16px; font-size: 0.82rem; color: var(--text-muted);
+    .tension-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+    .tension-option {
+      cursor: pointer; border: 2px solid var(--border); border-radius: 10px;
+      padding: 14px 8px; text-align: center;
       transition: all var(--transition); background: var(--bg);
     }
-    .chip-option:hover { border-color: var(--text-muted); color: var(--text); }
-    .chip-option.selected {
-      border-color: var(--accent-1); background: var(--bg-card); color: var(--text); font-weight: 600;
-    }
+    .tension-option:hover { border-color: var(--text-muted); }
+    .tension-option.selected { border-color: var(--accent-1); background: var(--bg-card); }
+    .tension-option .icon { font-size: 1.3rem; display: block; margin-bottom: 4px; }
+    .tension-option .label { font-size: 0.7rem; color: var(--text-muted); line-height: 1.2; }
+    .tension-option.selected .label { color: var(--text); font-weight: 600; }
 
     /* ============ Prompt Output ============ */
     .prompt-output { display: none; margin-top: 28px; }
     .prompt-output.active { display: block; }
-
     .prompt-output textarea {
       width: 100%; min-height: 200px; padding: 16px;
       border: 1px solid var(--border); border-radius: 10px;
@@ -199,9 +151,7 @@
       font-size: 0.82rem; line-height: 1.7; resize: vertical;
     }
     .prompt-output textarea:focus { outline: none; border-color: var(--accent-1); }
-
     .prompt-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-
     .btn {
       padding: 10px 24px; border: none; border-radius: 8px;
       font-size: 0.9rem; font-weight: 500; cursor: pointer;
@@ -209,9 +159,7 @@
     }
     .btn-primary { background: var(--accent-1); color: #fff; }
     .btn-primary:hover { background: #b56a4e; }
-    .btn-copy {
-      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
-    }
+    .btn-copy { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
     .btn-copy:hover { border-color: var(--accent-1); color: var(--accent-1); }
     .btn-copy.copied { border-color: #4caf50; color: #4caf50; }
 
@@ -225,8 +173,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Nav -->
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">CXY</a>
@@ -239,7 +185,6 @@
     </div>
   </nav>
 
-  <!-- Header -->
   <header class="page-header">
     <div class="container">
       <p class="hero-subtitle reveal">AI Skills</p>
@@ -248,18 +193,16 @@
     </div>
   </header>
 
-  <!-- Skills Grid -->
   <section class="section" style="padding-top:0;">
     <div class="container">
       <div class="skills-grid" id="skillsContainer"></div>
 
-      <!-- Skill Detail -->
       <div class="skill-detail" id="skillDetail">
         <div class="skill-detail-banner" id="detailBanner"></div>
         <div class="skill-detail-body">
           <div class="skill-detail-header">
             <div>
-              <h2 id="detailTitle">GC Minimal Zine Poster</h2>
+              <h2 id="detailTitle"></h2>
               <div class="skill-card-tags" id="detailTags" style="margin-top:8px;"></div>
             </div>
             <button class="close-btn" id="closeDetail">✕</button>
@@ -267,61 +210,7 @@
           <p class="skill-detail-desc" id="detailDesc"></p>
 
           <form class="prompt-form" id="promptForm">
-
-            <!-- 内容 -->
-            <div>
-              <div class="form-section-label">内容</div>
-              <div class="form-group full">
-                <label>主题 / 主体 <span class="hint">— 海报的核心内容</span></label>
-                <input type="text" id="fSubject" placeholder="例如：雨天的旧书店、海边黄昏、一只旧皮箱..." required>
-              </div>
-              <div class="form-group full" style="margin-top:16px;">
-                <label>海报文字 <span class="hint">— 可选，出现在海报上的短句</span></label>
-                <input type="text" id="fText" placeholder="留空则自动生成">
-              </div>
-            </div>
-
-            <!-- 色彩 -->
-            <div>
-              <div class="form-section-label">色彩</div>
-              <div class="form-group">
-                <label>强调色 <span class="hint">— 高饱和度色彩锚点</span></label>
-                <div class="color-swatches" id="colorSwatches"></div>
-              </div>
-              <div class="form-group" style="margin-top:16px;">
-                <label>纸张色调</label>
-                <div class="chip-grid" id="paperChips"></div>
-              </div>
-            </div>
-
-            <!-- 布局 -->
-            <div>
-              <div class="form-section-label">布局</div>
-              <div class="form-group">
-                <label>布局风格 <span class="hint">— 视觉构成与留白分布</span></label>
-                <div class="layout-grid" id="layoutGrid"></div>
-              </div>
-            </div>
-
-            <!-- 风格 -->
-            <div>
-              <div class="form-section-label">风格</div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>图像锚点</label>
-                  <div class="anchor-grid" id="anchorGrid"></div>
-                </div>
-                <div class="form-group">
-                  <label>纹理质感</label>
-                  <div class="chip-grid" id="textureChips"></div>
-                </div>
-              </div>
-              <div class="form-group full" style="margin-top:16px;">
-                <label>情绪氛围</label>
-                <div class="chip-grid" id="moodChips"></div>
-              </div>
-            </div>
-
+            <div id="formFields"></div>
             <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;font-size:1rem;">✨ 生成 Prompt</button>
           </form>
 
@@ -338,10 +227,8 @@
     </div>
   </section>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container"><p>&copy; 2026 CXY · 用光影与代码书写</p></div>
   </footer>
@@ -349,21 +236,39 @@
   <script src="/js/main.js"></script>
   <script>
     // =============================================
-    // Data
+    // Skills Data
     // =============================================
-    const skills = [{
-      id: 'zine-poster',
-      title: 'GC Minimal Zine Poster',
-      desc: '将主题、句子、物件、情绪或文章构想，转化为一张安静、极简的 ZINE 风格海报提示词。3:5 仿旧纸张画布，大量留白，一个小型视觉主体，一颗高饱和度色彩锚点。',
-      tags: ['ZINE 风格', '极简海报', '纸张质感', '留白构图'],
-      examples: [
-        'night-door.jpeg', 'yellow-step.jpeg', 'typhoon-memory.jpeg',
-        'shore-pause.jpeg', 'moon-tide.jpeg', 'pause-map.jpeg'
-      ]
-    }];
+    const skills = [
+      {
+        id: 'zine-poster',
+        title: 'GC Minimal Zine Poster',
+        desc: '将主题、句子、物件、情绪或文章构想，转化为一张安静、极简的 ZINE 风格海报提示词。3:5 仿旧纸张画布，大量留白，一个小型视觉主体，一颗高饱和度色彩锚点。',
+        tags: ['ZINE 风格', '极简海报', '纸张质感', '留白构图'],
+        img: 'night-door.jpeg',
+        banner: 'yellow-step.jpeg'
+      },
+      {
+        id: 'gathered-scenes',
+        title: '实景拼贴 · Gathered Scenes',
+        desc: '保留照片中不可替代的现场关系，以真实摄影作为锚点，让源自原图的抽象形状、单一高纯度色彩与可见的手撕纤维边缘向纸面延伸。照片提供事实，创作决定如何留下它。',
+        tags: ['实景拼贴', '摄影锚点', '纸张质感', '手撕边界'],
+        img: 'gathered-scene-1.jpg',
+        banner: 'gathered-scene-2.jpg'
+      },
+      {
+        id: 'scene-distillation',
+        title: '影像蒸馏 · Scene Distillation',
+        desc: '不在成品中保留原始照片。从照片中提取语义核心、情绪张力和视觉隐喻，再用纸张、插画、色彩与自由文字创作一件全新的作品。表达优先，克制而有力。',
+        tags: ['影像蒸馏', '情绪叙事', '自由创作', '视觉隐喻'],
+        img: 'distillation-1.jpg',
+        banner: 'distillation-2.jpg'
+      }
+    ];
 
-    // Colors
-    const colors = [
+    // =============================================
+    // Shared Data
+    // =============================================
+    const COLORS = [
       { id: 'cobalt-blue', label: '钴蓝', hex: '#0047ab' },
       { id: 'ultramarine', label: '群青', hex: '#120a8f' },
       { id: 'cyan', label: '青色', hex: '#00bcd4' },
@@ -375,173 +280,439 @@
       { id: 'tomato-red', label: '番茄红', hex: '#e63946' }
     ];
 
-    const papers = [
-      { id: 'warm-cream', label: '暖白 Warm Cream' },
-      { id: 'cool-gray', label: '冷灰 Cool Gray' },
-      { id: 'ivory', label: '象牙白 Ivory' },
-      { id: 'beige', label: '米色 Beige' },
-      { id: 'light-ochre', label: '浅赭 Light Ochre' },
-      { id: 'faded-newsprint', label: '褪色新闻纸 Newsprint' }
+    const PAPERS = [
+      { id: 'warm-cream', label: '暖白' }, { id: 'cool-gray', label: '冷灰' },
+      { id: 'ivory', label: '象牙白' }, { id: 'beige', label: '米色' },
+      { id: 'light-ochre', label: '浅赭' }, { id: 'faded-newsprint', label: '新闻纸' }
     ];
 
-    const layouts = [
-      { id: 'center-fragment', label: '居中碎片' },
-      { id: 'lower-left-float', label: '左下浮动' },
-      { id: 'upper-right-block', label: '右上区块' },
-      { id: 'dual-panel', label: '双面板' },
-      { id: 'irregular-cutout', label: '不规则剪裁' },
-      { id: 'type-led', label: '文字主导' },
-      { id: 'single-specimen', label: '单一标本' }
-    ];
-
-    const anchors = [
-      { id: 'tiny-faded-photo', label: '褪色照片', icon: '🌫️' },
-      { id: 'torn-paper-clipping', label: '撕纸剪报', icon: '✂️' },
-      { id: 'flat-silhouette', label: '扁平剪影', icon: '◼️' },
-      { id: 'solid-color-block', label: '纯色色块', icon: '🟧' },
-      { id: 'old-printed-illustration', label: '旧印刷插图', icon: '🖨️' },
-      { id: 'object-specimen', label: '物件标本', icon: '🔍' },
-      { id: 'translucent-geometric', label: '半透明几何', icon: '◇' },
-      { id: 'abstract-texture', label: '抽象纹理', icon: '〰️' }
-    ];
-
-    const textures = [
-      { id: 'xerox-softness', label: '复印柔化' },
-      { id: 'risograph-grain', label: '孔版印刷颗粒' },
-      { id: 'letterpress-ink-bleed', label: '凸版油墨晕染' },
-      { id: 'halftone-degradation', label: '网点退化' },
-      { id: 'film-grain', label: '胶片颗粒' },
-      { id: 'scan-noise', label: '扫描噪点' },
-      { id: 'aged-paper-mottling', label: '仿旧纸张斑驳' }
-    ];
-
-    const moods = [
-      { id: 'quiet', label: '🤍 安静' },
-      { id: 'summer', label: '☀️ 夏日' },
-      { id: 'solitude', label: '🌿 孤独' },
-      { id: 'childhood', label: '🍭 童年' },
-      { id: 'seaside', label: '🌊 海边' },
-      { id: 'afternoon', label: '🌤️ 午后' },
-      { id: 'night', label: '🌙 夜晚' },
-      { id: 'memory', label: '📜 记忆' },
+    const MOODS = [
+      { id: 'quiet', label: '🤍 安静' }, { id: 'summer', label: '☀️ 夏日' },
+      { id: 'solitude', label: '🌿 孤独' }, { id: 'childhood', label: '🍭 童年' },
+      { id: 'seaside', label: '🌊 海边' }, { id: 'afternoon', label: '🌤️ 午后' },
+      { id: 'night', label: '🌙 夜晚' }, { id: 'memory', label: '📜 记忆' },
       { id: 'slight-surrealism', label: '🌀 超现实' }
     ];
 
-    // =============================================
-    // Prompt Generator
-    // =============================================
+    const TENSIONS = [
+      { id: 'intimacy-distance', label: '亲密 / 距离', icon: '↔️' },
+      { id: 'shelter-confinement', label: '庇护 / 束缚', icon: '🏠' },
+      { id: 'movement-stillness', label: '运动 / 静止', icon: '⚡' },
+      { id: 'smallness-vastness', label: '渺小 / 广阔', icon: '⛰️' },
+      { id: 'warmth-coldness', label: '温暖 / 寒冷', icon: '🌡️' },
+      { id: 'memory-disappearance', label: '记忆 / 消逝', icon: '🕯️' },
+      { id: 'order-growth', label: '秩序 / 生长', icon: '🌱' },
+      { id: 'visibility-concealment', label: '可见 / 隐藏', icon: '👁️' },
+      { id: 'permanence-fragility', label: '永恒 / 脆弱', icon: '🪨' }
+    ];
+
     const COLOR_MAP = {
-      'cobalt-blue': 'fully saturated cobalt-blue',
-      'ultramarine': 'opaque ultramarine',
-      'cyan': 'vivid cyan',
-      'violet': 'deep violet',
-      'magenta-pink': 'bright magenta-pink',
-      'lemon-yellow': 'pure lemon-yellow',
-      'pear-green': 'vivid pear-green',
-      'orange': 'warm saturated orange',
-      'tomato-red': 'clean tomato-red'
+      'cobalt-blue': 'fully saturated cobalt-blue', 'ultramarine': 'opaque ultramarine',
+      'cyan': 'vivid cyan', 'violet': 'deep violet', 'magenta-pink': 'bright magenta-pink',
+      'lemon-yellow': 'pure lemon-yellow', 'pear-green': 'vivid pear-green',
+      'orange': 'warm saturated orange', 'tomato-red': 'clean tomato-red'
     };
     const PAPER_MAP = {
-      'warm-cream': 'warm cream aged paper',
-      'cool-gray': 'cool gray aged paper',
-      'ivory': 'ivory-toned vintage paper',
-      'beige': 'beige antique paper',
-      'light-ochre': 'light ochre aged paper',
-      'faded-newsprint': 'faded newsprint paper'
+      'warm-cream': 'warm cream aged paper', 'cool-gray': 'cool gray aged paper',
+      'ivory': 'ivory-toned vintage paper', 'beige': 'beige antique paper',
+      'light-ochre': 'light ochre aged paper', 'faded-newsprint': 'faded newsprint paper'
     };
 
-    function generatePrompt(data) {
-      const color = COLOR_MAP[data.color] || data.color;
-      const paper = PAPER_MAP[data.paper] || data.paper;
-      const subject = data.subject;
-      const text = data.text || '';
-      const layout = data.layout;
-      const anchor = data.anchor;
-      const mood = data.mood;
-      const texture = data.texture;
+    // =============================================
+    // Form Builders
+    // =============================================
+    function buildColorSwatches(containerId, stateKey, defaultVal) {
+      const c = document.getElementById(containerId);
+      COLORS.forEach(clr => {
+        const el = document.createElement('div');
+        el.className = `color-swatch${clr.id === defaultVal ? ' selected' : ''}`;
+        el.style.background = clr.hex;
+        if (clr.id === 'lemon-yellow') el.style.border = '2px solid #ddd';
+        el.innerHTML = `<span class="tooltip">${clr.label}</span>`;
+        el.dataset.value = clr.id;
+        el.addEventListener('click', () => {
+          c.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+          el.classList.add('selected');
+          window[stateKey] = clr.id;
+        });
+        c.appendChild(el);
+      });
+    }
 
-      const layoutDesc = {
-        'center-fragment': 'A tiny central visual cluster occupying about 12% of the frame, surrounded by vast empty space.',
-        'lower-left-float': 'A small anchor in the lower-left quadrant, with abundant empty space above and to the right.',
-        'upper-right-block': 'A small color/photo block in the upper-right region, with loose text drifting in the remaining space.',
-        'dual-panel': 'Two small overlapping or adjacent panels with a narrow gap, creating a quiet diptych rhythm.',
-        'irregular-cutout': 'A torn or organic paper shape carrying the image, with rough edges against the paper void.',
-        'type-led': 'Typography is the primary visual anchor; the image element is secondary or minimal.',
-        'single-specimen': 'One isolated object or mark placed as a specimen, with almost no support graphics.'
-      }[layout] || 'A small visual cluster occupying about 15% of the canvas, placed with generous negative space.';
+    function buildChips(containerId, items, stateKey, defaultVal) {
+      const c = document.getElementById(containerId);
+      items.forEach(item => {
+        const el = document.createElement('div');
+        const id = item.id || item;
+        el.className = `chip-option${id === defaultVal ? ' selected' : ''}`;
+        el.textContent = item.label || item;
+        el.dataset.value = id;
+        el.addEventListener('click', () => {
+          c.querySelectorAll('.chip-option').forEach(s => s.classList.remove('selected'));
+          el.classList.add('selected');
+          window[stateKey] = id;
+        });
+        c.appendChild(el);
+      });
+    }
 
-      const p1 = `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. 70% to 90% of the canvas is empty paper. ${layoutDesc}`;
-
-      const anchorDesc = {
-        'tiny-faded-photo': `a tiny faded black-and-white photograph of ${subject}, with softened edges and low contrast, appearing as a found archival print`,
-        'torn-paper-clipping': `a torn-paper clipping featuring ${subject}, with rough deckled edges and a slightly yellowed paper fragment`,
-        'flat-silhouette': `a flat silhouette of ${subject}, rendered as a solid cutout with clean edges against the paper void`,
-        'solid-color-block': `a solid color block in the shape or suggestion of ${subject}, acting as a bold graphic anchor`,
-        'old-printed-illustration': `an old printed illustration of ${subject}, with visible halftone dots and ink fading from age`,
-        'object-specimen': `a single specimen of ${subject}, isolated like a museum object with a subtle shadow or pin`,
-        'translucent-geometric': `a translucent geometric overlay suggesting ${subject}, with layered semi-opaque shapes`,
-        'abstract-texture': `an abstract texture window evoking ${subject}, with organic marks and rubbed ink`
-      }[anchor] || `a small visual representation of ${subject}`;
-
-      const p2 = `The image anchor is ${anchorDesc}. The anchor treatment uses low-contrast photocopy softness, with subtle ink bleed and a slightly misregistered feel that makes it belong to the paper.`;
-
-      const textLine = text
-        ? `A short readable phrase: "${text}". `
-        : `A short poetic phrase related to "${subject}" appears as small serif type. `;
-
-      const p3 = `${textLine}Small serif or typewriter typography, set in a sparse arrangement. The single high-chroma accent is ${color}, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size. Print defects include ${texture.replace(/-/g, ' ')}, with subtle scan noise and paper fiber texture throughout.`;
-
-      const moodMap = {
-        'quiet': 'quiet, contemplative, sparse, diary-like',
-        'summer': 'warm, nostalgic summer, hazy afternoon light',
-        'solitude': 'solitary, introspective, distant, meditative',
-        'childhood': 'childhood memory, nostalgic, faded, tender',
-        'seaside': 'seaside atmosphere, salt air, coastal quiet',
-        'afternoon': 'lazy afternoon, warm light, stillness',
-        'night': 'nocturnal, hushed, dim, shadowy, lunar',
-        'memory': 'memory-like, archival, distant, ephemeral',
-        'slight-surrealism': 'slightly surreal, dream-adjacent, uncanny quiet'
-      }[mood] || 'quiet, poetic, archival';
-
-      const p4 = `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. The overall mood is ${moodMap}: a Japanese/Korean indie zine or minimal editorial poster. No full-bleed scene, no commercial headline, no glossy mockup, no 3D, no cinematic lighting, no neon, no dense composition, no long clean text blocks.`;
-
-      return [p1, p2, p3, p4].join('\n\n');
+    function buildTensionGrid(containerId, items, stateKey, defaultVal) {
+      const c = document.getElementById(containerId);
+      items.forEach(item => {
+        const el = document.createElement('div');
+        el.className = `tension-option${item.id === defaultVal ? ' selected' : ''}`;
+        el.innerHTML = `<span class="icon">${item.icon}</span><div class="label">${item.label}</div>`;
+        el.dataset.value = item.id;
+        el.addEventListener('click', () => {
+          c.querySelectorAll('.tension-option').forEach(s => s.classList.remove('selected'));
+          el.classList.add('selected');
+          window[stateKey] = item.id;
+        });
+        c.appendChild(el);
+      });
     }
 
     // =============================================
-    // UI State
+    // Skill-Specific Form Definitions
     // =============================================
-    const state = {
-      color: 'orange',
-      paper: 'warm-cream',
-      layout: 'dual-panel',
-      anchor: 'flat-silhouette',
-      texture: 'risograph-grain',
-      mood: 'quiet'
+    const FORM_DEFS = {
+      'zine-poster': {
+        state: { color: 'orange', paper: 'warm-cream', layout: 'dual-panel', anchor: 'flat-silhouette', texture: 'risograph-grain', mood: 'quiet' },
+        html: function() {
+          return `
+            <div><div class="form-section-label">内容</div>
+              <div class="form-group full"><label>主题 / 主体 <span class="hint">— 海报的核心内容</span></label>
+                <input type="text" id="fSubject" placeholder="例如：雨天的旧书店、海边黄昏、一只旧皮箱..." required></div>
+              <div class="form-group full" style="margin-top:16px;"><label>海报文字 <span class="hint">— 可选</span></label>
+                <input type="text" id="fText" placeholder="留空则自动生成"></div>
+            </div>
+            <div><div class="form-section-label">色彩</div>
+              <div class="form-group"><label>强调色</label><div class="color-swatches" id="zp-color"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>纸张色调</label><div class="chip-grid" id="zp-paper"></div></div>
+            </div>
+            <div><div class="form-section-label">布局</div>
+              <div class="form-group"><label>布局风格</label><div class="layout-grid" id="zp-layout"></div></div>
+            </div>
+            <div><div class="form-section-label">风格</div>
+              <div class="form-row"><div class="form-group"><label>图像锚点</label><div class="anchor-grid" id="zp-anchor"></div></div>
+                <div class="form-group"><label>纹理质感</label><div class="chip-grid" id="zp-texture"></div></div>
+              </div>
+              <div class="form-group full" style="margin-top:16px;"><label>情绪氛围</label><div class="chip-grid" id="zp-mood"></div></div>
+            </div>`;
+        },
+        init: function() {
+          buildColorSwatches('zp-color', '_zpColor', 'orange');
+          buildChips('zp-paper', PAPERS, '_zpPaper', 'warm-cream');
+          buildChips('zp-texture', [
+            { id: 'xerox-softness', label: '复印柔化' }, { id: 'risograph-grain', label: '孔版印刷颗粒' },
+            { id: 'letterpress-ink-bleed', label: '凸版油墨晕染' }, { id: 'halftone-degradation', label: '网点退化' },
+            { id: 'film-grain', label: '胶片颗粒' }, { id: 'scan-noise', label: '扫描噪点' },
+            { id: 'aged-paper-mottling', label: '仿旧纸张斑驳' }
+          ], '_zpTexture', 'risograph-grain');
+          buildChips('zp-mood', MOODS, '_zpMood', 'quiet');
+          // Layout
+          const layouts = [
+            { id: 'center-fragment', label: '居中碎片' }, { id: 'lower-left-float', label: '左下浮动' },
+            { id: 'upper-right-block', label: '右上区块' }, { id: 'dual-panel', label: '双面板' },
+            { id: 'irregular-cutout', label: '不规则剪裁' }, { id: 'type-led', label: '文字主导' },
+            { id: 'single-specimen', label: '单一标本' }
+          ];
+          const diags = {
+            'center-fragment': [{x:38,y:35,w:24,h:30}],
+            'lower-left-float': [{x:5,y:55,w:28,h:35}],
+            'upper-right-block': [{x:55,y:5,w:30,h:25}],
+            'dual-panel': [{x:10,y:20,w:35,h:25},{x:50,y:50,w:35,h:25}],
+            'irregular-cutout': [{x:20,y:25,w:40,h:45,clip:true}],
+            'type-led': [{x:15,y:30,w:55,h:8},{x:15,y:45,w:40,h:8},{x:15,y:60,w:50,h:8}],
+            'single-specimen': [{x:30,y:30,w:30,h:35}]
+          };
+          const lc = document.getElementById('zp-layout');
+          layouts.forEach(l => {
+            const el = document.createElement('div');
+            el.className = `layout-option${l.id === 'dual-panel' ? ' selected' : ''}`;
+            const dots = (diags[l.id]||[]).map(d =>
+              `<div class="dot" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%"></div>`
+            ).join('');
+            el.innerHTML = `<div class="layout-diagram">${dots}</div><div class="label">${l.label}</div>`;
+            el.dataset.value = l.id;
+            el.addEventListener('click', () => {
+              lc.querySelectorAll('.layout-option').forEach(s => s.classList.remove('selected'));
+              el.classList.add('selected');
+              window._zpLayout = l.id;
+            });
+            lc.appendChild(el);
+          });
+          // Anchor
+          const anchors = [
+            { id: 'tiny-faded-photo', label: '褪色照片', icon: '🌫️' },
+            { id: 'torn-paper-clipping', label: '撕纸剪报', icon: '✂️' },
+            { id: 'flat-silhouette', label: '扁平剪影', icon: '◼️' },
+            { id: 'solid-color-block', label: '纯色色块', icon: '🟧' },
+            { id: 'old-printed-illustration', label: '旧印刷插图', icon: '🖨️' },
+            { id: 'object-specimen', label: '物件标本', icon: '🔍' },
+            { id: 'translucent-geometric', label: '半透明几何', icon: '◇' },
+            { id: 'abstract-texture', label: '抽象纹理', icon: '〰️' }
+          ];
+          const ac = document.getElementById('zp-anchor');
+          anchors.forEach(a => {
+            const el = document.createElement('div');
+            el.className = `anchor-option${a.id === 'flat-silhouette' ? ' selected' : ''}`;
+            el.innerHTML = `<span class="icon">${a.icon}</span><div class="label">${a.label}</div>`;
+            el.dataset.value = a.id;
+            el.addEventListener('click', () => {
+              ac.querySelectorAll('.anchor-option').forEach(s => s.classList.remove('selected'));
+              el.classList.add('selected');
+              window._zpAnchor = a.id;
+            });
+            ac.appendChild(el);
+          });
+          window._zpColor = 'orange'; window._zpPaper = 'warm-cream';
+          window._zpLayout = 'dual-panel'; window._zpAnchor = 'flat-silhouette';
+          window._zpTexture = 'risograph-grain'; window._zpMood = 'quiet';
+        },
+        generate: function() {
+          const subject = document.getElementById('fSubject').value.trim();
+          if (!subject) return null;
+          const text = document.getElementById('fText').value.trim();
+          const color = COLOR_MAP[window._zpColor || 'orange'];
+          const paper = PAPER_MAP[window._zpPaper || 'warm-cream'];
+          const layout = window._zpLayout || 'dual-panel';
+          const anchor = window._zpAnchor || 'flat-silhouette';
+          const texture = window._zpTexture || 'risograph-grain';
+          const mood = window._zpMood || 'quiet';
+
+          const layoutDesc = {
+            'center-fragment': 'A tiny central visual cluster occupying about 12% of the frame, surrounded by vast empty space.',
+            'lower-left-float': 'A small anchor in the lower-left quadrant, with abundant empty space above and to the right.',
+            'upper-right-block': 'A small color/photo block in the upper-right region, with loose text drifting in the remaining space.',
+            'dual-panel': 'Two small overlapping or adjacent panels with a narrow gap, creating a quiet diptych rhythm.',
+            'irregular-cutout': 'A torn or organic paper shape carrying the image, with rough edges against the paper void.',
+            'type-led': 'Typography is the primary visual anchor; the image element is secondary or minimal.',
+            'single-specimen': 'One isolated object or mark placed as a specimen, with almost no support graphics.'
+          }[layout] || 'A small visual cluster occupying about 15% of the canvas.';
+
+          const anchorDesc = {
+            'tiny-faded-photo': `a tiny faded black-and-white photograph of ${subject}, with softened edges and low contrast, appearing as a found archival print`,
+            'torn-paper-clipping': `a torn-paper clipping featuring ${subject}, with rough deckled edges and a slightly yellowed paper fragment`,
+            'flat-silhouette': `a flat silhouette of ${subject}, rendered as a solid cutout with clean edges against the paper void`,
+            'solid-color-block': `a solid color block in the shape or suggestion of ${subject}, acting as a bold graphic anchor`,
+            'old-printed-illustration': `an old printed illustration of ${subject}, with visible halftone dots and ink fading from age`,
+            'object-specimen': `a single specimen of ${subject}, isolated like a museum object with a subtle shadow or pin`,
+            'translucent-geometric': `a translucent geometric overlay suggesting ${subject}, with layered semi-opaque shapes`,
+            'abstract-texture': `an abstract texture window evoking ${subject}, with organic marks and rubbed ink`
+          }[anchor] || `a small visual representation of ${subject}`;
+
+          const textLine = text ? `A short readable phrase: "${text}". ` : `A short poetic phrase related to "${subject}" appears as small serif type. `;
+
+          const moodMap = {
+            'quiet':'quiet,contemplative,sparse,diary-like','summer':'warm,nostalgic summer,hazy afternoon light',
+            'solitude':'solitary,introspective,distant,meditative','childhood':'childhood memory,nostalgic,faded,tender',
+            'seaside':'seaside atmosphere,salt air,coastal quiet','afternoon':'lazy afternoon,warm light,stillness',
+            'night':'nocturnal,hushed,dim,shadowy,lunar','memory':'memory-like,archival,distant,ephemeral',
+            'slight-surrealism':'slightly surreal,dream-adjacent,uncanny quiet'
+          }[mood] || 'quiet,poetic,archival';
+
+          return [
+            `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. 70% to 90% of the canvas is empty paper. ${layoutDesc}`,
+            `The image anchor is ${anchorDesc}. The anchor treatment uses low-contrast photocopy softness, with subtle ink bleed and a slightly misregistered feel that makes it belong to the paper.`,
+            `${textLine}Small serif or typewriter typography, set in a sparse arrangement. The single high-chroma accent is ${color}, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size. Print defects include ${texture.replace(/-/g, ' ')}, with subtle scan noise and paper fiber texture throughout.`,
+            `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. The overall mood is ${moodMap}: a Japanese/Korean indie zine or minimal editorial poster. No full-bleed scene, no commercial headline, no glossy mockup, no 3D, no cinematic lighting, no neon, no dense composition, no long clean text blocks.`
+          ].join('\n\n');
+        }
+      },
+
+      'gathered-scenes': {
+        state: { color: 'cobalt-blue', paper: 'warm-cream', mood: 'quiet', lang: 'en' },
+        html: function() {
+          return `
+            <div><div class="form-section-label">场景</div>
+              <div class="form-group full"><label>场景描述 <span class="hint">— 描述你想处理的照片内容</span></label>
+                <textarea id="gsScene" placeholder="例如：一张第比利斯城市全景照片，前景是教堂塔楼，远处是连绵的山脉和城市建筑，黄昏时分..." required></textarea></div>
+              <div class="form-row" style="margin-top:16px;">
+                <div class="form-group"><label>语言模式 <span class="hint">— 海报文字语言</span></label>
+                  <div class="chip-grid" id="gs-lang"></div></div>
+                <div class="form-group"><label>自定义文字 <span class="hint">— 可选</span></label>
+                  <input type="text" id="gsText" placeholder="留空则自动生成"></div>
+              </div>
+            </div>
+            <div><div class="form-section-label">色彩</div>
+              <div class="form-group"><label>强调色 <span class="hint">— 结构性的单一色彩</span></label>
+                <div class="color-swatches" id="gs-color"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>纸张色调</label>
+                <div class="chip-grid" id="gs-paper"></div></div>
+            </div>
+            <div><div class="form-section-label">风格</div>
+              <div class="form-row">
+                <div class="form-group"><label>抽象程度</label>
+                  <div class="chip-grid" id="gs-abstraction"></div></div>
+                <div class="form-group"><label>情绪氛围</label>
+                  <div class="chip-grid" id="gs-mood"></div></div>
+              </div>
+            </div>`;
+        },
+        init: function() {
+          buildColorSwatches('gs-color', '_gsColor', 'cobalt-blue');
+          buildChips('gs-paper', PAPERS, '_gsPaper', 'warm-cream');
+          buildChips('gs-mood', MOODS, '_gsMood', 'quiet');
+          buildChips('gs-lang', [
+            { id: 'en', label: 'English' }, { id: 'zh', label: '中文' },
+            { id: 'bilingual', label: '中英双语' }
+          ], '_gsLang', 'en');
+          buildChips('gs-abstraction', [
+            { id: 'low', label: '低 — 保留较多细节' },
+            { id: 'medium', label: '中 — 适度的简化' },
+            { id: 'high', label: '高 — 大幅抽象化' }
+          ], '_gsAbstraction', 'medium');
+          window._gsColor = 'cobalt-blue'; window._gsPaper = 'warm-cream';
+          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium';
+        },
+        generate: function() {
+          const scene = document.getElementById('gsScene').value.trim();
+          if (!scene) return null;
+          const text = document.getElementById('gsText').value.trim();
+          const color = COLOR_MAP[window._gsColor || 'cobalt-blue'];
+          const paper = PAPER_MAP[window._gsPaper || 'warm-cream'];
+          const mood = window._gsMood || 'quiet';
+          const lang = window._gsLang || 'en';
+          const absLevel = window._gsAbstraction || 'medium';
+
+          const absMap = { low: '30-40', medium: '60-80', high: '80-95' };
+          const absRemove = absMap[absLevel];
+
+          const langMode = lang === 'zh' ? 'Chinese-only' : lang === 'bilingual' ? 'Chinese-English bilingual' : 'English-only';
+          const textLine = text ? lang === 'zh' ? `使用中文文字: "${text}"` : `Use the exact text: "${text}"` : '';
+
+          const moodMap = {
+            'quiet':'quiet, contemplative','summer':'warm, nostalgic summer','solitude':'solitary, meditative',
+            'childhood':'childhood, nostalgic','seaside':'seaside, coastal','afternoon':'lazy afternoon, stillness',
+            'night':'nocturnal, hushed','memory':'memory-like, archival','slight-surrealism':'slightly surreal'
+          }[mood] || 'quiet';
+
+          return [
+            `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. The composition uses a transformative seam layout: photography occupies about 30-45% of the frame as the factual anchor, and an enlarged illustration field extends across roughly 50-70% of the poster. The eye path enters through the photographic anchor, then moves into the illustrated field and chromatic structure, finally resting in quiet paper.`,
+            `Scene fidelity: preserve the scene identity and core spatial relationships as described: "${scene}". Keep the photographic portion truthful — natural color atmosphere, recognizable geometry, and the defining spatial invariants. The photograph remains the factual anchor.`,
+            `Illustration field: use medium abstraction, removing roughly ${absRemove}% of descriptive detail. Merge repeated or adjacent forms into larger masses. Replace realistic shading with flat ink, broken contour, and cut-paper treatment. The illustration reinterprets rather than traces the source.${textLine ? `\n\nMicro-text: ${langMode}. ${textLine}` : `\n\nMicro-text: ${langMode}. Author a compact scene-derived line — a standalone word, keyword sequence, or very short phrase that names the scene's quiet emotional residue rather than metadata.`}\n\nChromatic structure: one added print hue as ${color}, in source-continuation integration mode. The color derives a contour from the source geometry and crosses the photo-paper boundary. It occupies about 3-8% of the poster as an opaque cut-paper or flat printed form.\n\nTorn-paper handoff: a visible hand-torn fibrous edge at the main photo-paper boundary. Irregular contour, narrow exposed-fiber fringe (1-3% of short edge), warm paper-tone interruption. No digital clipping or uniform frame.`,
+            `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low contrast. Paper fibers, restrained speckles, and scan noise throughout. The mood is ${moodMap}: a tactile, quiet, non-commercial paper art piece. No 3D, no cinematic lighting, no glossy mockup, no commercial headline hierarchy, no neon, no dense detail. The result must read as a real printed poster at thumbnail size.`
+          ].join('\n\n');
+        }
+      },
+
+      'scene-distillation': {
+        state: { color: 'ultramarine', paper: 'warm-cream', mood: 'solitude', tension: 'smallness-vastness', colorMode: 'standard' },
+        html: function() {
+          return `
+            <div><div class="form-section-label">场景</div>
+              <div class="form-group full"><label>照片描述 <span class="hint">— 描述照片的内容和你想表达的情绪</span></label>
+                <textarea id="sdScene" placeholder="例如：雪地中一个穿着红色冬衣的孩子坐在长椅上，周围是光秃的树枝和薄雾，很安静，有些孤独感..." required></textarea></div>
+              <div class="form-group full" style="margin-top:16px;"><label>艺术命题 <span class="hint">— 你想让观者感受到什么</span></label>
+                <input type="text" id="sdProposition" placeholder="例如：渺小的个体在广阔天地间的存在感"></div>
+            </div>
+            <div><div class="form-section-label">张力与隐喻</div>
+              <div class="form-row">
+                <div class="form-group"><label>核心张力 <span class="hint">— 对立关系</span></label>
+                  <div class="tension-grid" id="sd-tension"></div></div>
+                <div class="form-group"><label>视觉隐喻 <span class="hint">— 可选，图像化的比喻</span></label>
+                  <input type="text" id="sdMetaphor" placeholder="例如：飘落的雪像是时间的尘埃"></div>
+              </div>
+            </div>
+            <div><div class="form-section-label">色彩</div>
+              <div class="form-group"><label>色彩模式</label>
+                <div class="chip-grid" id="sd-colorMode"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>强调色 <span class="hint">— 标准模式下的色彩锚点</span></label>
+                <div class="color-swatches" id="sd-color"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>纸张色调</label>
+                <div class="chip-grid" id="sd-paper"></div></div>
+            </div>
+            <div><div class="form-section-label">风格</div>
+              <div class="form-row">
+                <div class="form-group"><label>情绪氛围</label>
+                  <div class="chip-grid" id="sd-mood"></div></div>
+                <div class="form-group"><label>文字方向 <span class="hint">— 可选，出现的文字内容</span></label>
+                  <input type="text" id="sdText" placeholder="留空则自动生成"></div>
+              </div>
+            </div>`;
+        },
+        init: function() {
+          buildColorSwatches('sd-color', '_sdColor', 'ultramarine');
+          buildChips('sd-paper', PAPERS, '_sdPaper', 'warm-cream');
+          buildChips('sd-mood', MOODS, '_sdMood', 'solitude');
+          buildTensionGrid('sd-tension', TENSIONS, '_sdTension', 'smallness-vastness');
+          buildChips('sd-colorMode', [
+            { id: 'standard', label: '标准强调色模式' },
+            { id: 'solid-block', label: '单色块模式' }
+          ], '_sdColorMode', 'standard');
+          window._sdColor = 'ultramarine'; window._sdPaper = 'warm-cream';
+          window._sdMood = 'solitude'; window._sdTension = 'smallness-vastness'; window._sdColorMode = 'standard';
+        },
+        generate: function() {
+          const scene = document.getElementById('sdScene').value.trim();
+          if (!scene) return null;
+          const prop = document.getElementById('sdProposition').value.trim();
+          const meta = document.getElementById('sdMetaphor').value.trim();
+          const text = document.getElementById('sdText').value.trim();
+          const color = COLOR_MAP[window._sdColor || 'ultramarine'];
+          const paper = PAPER_MAP[window._sdPaper || 'warm-cream'];
+          const mood = window._sdMood || 'solitude';
+          const tension = window._sdTension || 'smallness-vastness';
+          const colorMode = window._sdColorMode || 'standard';
+
+          const tensionMap = {
+            'intimacy-distance':'intimacy and distance','shelter-confinement':'shelter and confinement',
+            'movement-stillness':'movement and stillness','smallness-vastness':'smallness and vastness',
+            'warmth-coldness':'warmth and coldness','memory-disappearance':'memory and disappearance',
+            'order-growth':'order and growth','visibility-concealment':'visibility and concealment',
+            'permanence-fragility':'permanence and fragility'
+          };
+
+          const moodMap = {
+            'quiet':'quiet, contemplative','summer':'warm, nostalgic','solitude':'solitary, meditative',
+            'childhood':'childhood, tender','seaside':'seaside, coastal','afternoon':'still, warm',
+            'night':'nocturnal, hushed','memory':'memory-like, distant','slight-surrealism':'slightly surreal'
+          }[mood] || 'quiet';
+
+          const propLine = prop ? `Artistic proposition: ${prop}.` : 'Artistic proposition: capture the emotional residue that remains after factual description is removed.';
+          const metaLine = meta ? `Central visual metaphor: ${meta}, derived from the source material.` : 'Derive one central visual metaphor from the source material that embodies the emotional tension.';
+          const textLine = text ? `Authorial text: "${text}".` : 'Authorial text: invent a short, evocative phrase in Chinese or English that deepens the artwork\'s proposition.';
+          const tensionStr = tensionMap[tension] || 'contrasting forces';
+
+          const colorSection = colorMode === 'solid-block'
+            ? `Color mode: Solid Color-Block Mode. Use exactly one contiguous ${color} field occupying roughly 5-10% of the poster. Render every other printed form in neutral charcoal, graphite, warm gray, or off-black ink. The color field is the visual entry point and central spatial idea — a window, aperture, or silhouette derived from the source's semantic nucleus.`
+            : `Color mode: Standard Accent Mode. The single high-chroma accent is ${color}, occupying about 1-3% of the full poster or 15-30% of the active cluster. Use it as a focal pin, counterweight, or emotional event. Keep all other forms in neutral ink values.`;
+
+          return [
+            `Expression and visible consequence: ${propLine} The central tension is ${tensionStr}. ${metaLine} Leave one interpretive opening — one relationship deliberately unresolved — so the viewer must complete the meaning.`,
+            `Canvas: a vertical 3:5 paper-poster on ${paper}. Full-frame flat scan, no border, no mockup. 70-85% quiet paper. One active illustration cluster occupying about 12-30% of the canvas. Asymmetric composition with figure-ground clarity, directional breathing room, and deliberate eye path: entry through the focal encounter, then movement through negative space to quiet exit.`,
+            `Distilled subject: semantic nucleus extracted from the described scene: "${scene}". Preserve 2-4 source anchors — the core subject, dominant gesture, key spatial relationship, and emotional residue. Discard roughly 70-90% of descriptive detail. Render the illustration using editorial abstraction: simplified masses, broken contours, cut-paper forms, and sparse marks. The final image must contain original illustration, paper, and typography only. Do not reproduce, embed, or retain photographic pixels from the reference.`,
+            `${colorSection}\n\nTransition edge: use natural isolated contour — clean organic silhouettes that meet the paper directly, with faint ink bite or paper grain at the contour. No torn boundary, grayscale rim, or decorative border.\n\nTypography: ${textLine} Treat text as authorial material — it may be tiny, fragmented, oversized, or materially integrated. Use it to expand, redirect, or complicate the image, not to caption what is visible.`,
+            `Reproduction: flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. Paper fibers, grain, and subtle print defects. The emotional temperature is ${moodMap}: poetic, tactile, and non-commercial. No photographic or photorealistic regions. No 3D, no cinematic lighting, no glossy mockup, no commercial hierarchy, no dense detail, no decorative motifs. The result must stand as an independent artwork without the source photograph.`
+          ].join('\n\n');
+        }
+      }
     };
 
     // =============================================
-    // Render Functions
+    // UI Logic
     // =============================================
     const container = document.getElementById('skillsContainer');
     const detail = document.getElementById('skillDetail');
     const closeBtn = document.getElementById('closeDetail');
     const form = document.getElementById('promptForm');
+    const formFields = document.getElementById('formFields');
     const output = document.getElementById('promptOutput');
     const result = document.getElementById('promptResult');
     const copyBtn = document.getElementById('copyBtn');
     const regenBtn = document.getElementById('regenerateBtn');
     const toast = document.getElementById('toast');
+    let currentSkill = null;
 
-    // Skill cards with images
+    // Render skill cards
     skills.forEach(skill => {
       const card = document.createElement('div');
       card.className = 'skill-card reveal';
       card.style.cursor = 'pointer';
-      const img = skill.examples[0] ? `/ai-skills/examples/${skill.examples[0]}` : '';
       card.innerHTML = `
         <div class="skill-card-img">
-          <img src="${img}" alt="${skill.title}" loading="lazy">
+          <img src="/ai-skills/examples/${skill.img}" alt="${skill.title}" loading="lazy">
         </div>
         <div class="skill-card-body">
           <div class="skill-card-tags">
@@ -557,128 +728,21 @@
       container.appendChild(card);
     });
 
-    // Color swatches
-    const colorContainer = document.getElementById('colorSwatches');
-    colors.forEach(c => {
-      const el = document.createElement('div');
-      el.className = `color-swatch${c.id === state.color ? ' selected' : ''}`;
-      el.style.background = c.hex;
-      if (c.id === 'lemon-yellow') el.style.border = '2px solid #ddd';
-      el.innerHTML = `<span class="tooltip">${c.label}</span>`;
-      el.dataset.value = c.id;
-      el.addEventListener('click', () => {
-        colorContainer.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        state.color = c.id;
-      });
-      colorContainer.appendChild(el);
-    });
-
-    // Paper chips
-    const paperContainer = document.getElementById('paperChips');
-    papers.forEach(p => {
-      const el = document.createElement('div');
-      el.className = `chip-option${p.id === state.paper ? ' selected' : ''}`;
-      el.textContent = p.label;
-      el.dataset.value = p.id;
-      el.addEventListener('click', () => {
-        paperContainer.querySelectorAll('.chip-option').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        state.paper = p.id;
-      });
-      paperContainer.appendChild(el);
-    });
-
-    // Layout diagrams
-    const layoutContainer = document.getElementById('layoutGrid');
-    const layoutDiagrams = {
-      'center-fragment': { dots: [{ x: 38, y: 35, w: 24, h: 30 }] },
-      'lower-left-float': { dots: [{ x: 5, y: 55, w: 28, h: 35 }] },
-      'upper-right-block': { dots: [{ x: 55, y: 5, w: 30, h: 25 }] },
-      'dual-panel': { dots: [{ x: 10, y: 20, w: 35, h: 25 }, { x: 50, y: 50, w: 35, h: 25 }] },
-      'irregular-cutout': { dots: [{ x: 20, y: 25, w: 40, h: 45, clip: true }] },
-      'type-led': { dots: [{ x: 15, y: 30, w: 55, h: 8 }, { x: 15, y: 45, w: 40, h: 8 }, { x: 15, y: 60, w: 50, h: 8 }] },
-      'single-specimen': { dots: [{ x: 30, y: 30, w: 30, h: 35 }] }
-    };
-
-    layouts.forEach(l => {
-      const el = document.createElement('div');
-      el.className = `layout-option${l.id === state.layout ? ' selected' : ''}`;
-      const diag = layoutDiagrams[l.id] || { dots: [{ x: 30, y: 30, w: 30, h: 30 }] };
-      let dots = diag.dots.map(d => {
-        const style = `left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%`;
-        return `<div class="dot${d.clip ? ' color-block' : ''}" style="${style}"></div>`;
-      }).join('');
-      el.innerHTML = `<div class="layout-diagram">${dots}</div><div class="label">${l.label}</div>`;
-      el.dataset.value = l.id;
-      el.addEventListener('click', () => {
-        layoutContainer.querySelectorAll('.layout-option').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        state.layout = l.id;
-      });
-      layoutContainer.appendChild(el);
-    });
-
-    // Anchor grid
-    const anchorContainer = document.getElementById('anchorGrid');
-    anchors.forEach(a => {
-      const el = document.createElement('div');
-      el.className = `anchor-option${a.id === state.anchor ? ' selected' : ''}`;
-      el.innerHTML = `<span class="icon">${a.icon}</span><div class="label">${a.label}</div>`;
-      el.dataset.value = a.id;
-      el.addEventListener('click', () => {
-        anchorContainer.querySelectorAll('.anchor-option').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        state.anchor = a.id;
-      });
-      anchorContainer.appendChild(el);
-    });
-
-    // Texture chips
-    const textureContainer = document.getElementById('textureChips');
-    textures.forEach(t => {
-      const el = document.createElement('div');
-      el.className = `chip-option${t.id === state.texture ? ' selected' : ''}`;
-      el.textContent = t.label;
-      el.dataset.value = t.id;
-      el.addEventListener('click', () => {
-        textureContainer.querySelectorAll('.chip-option').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        state.texture = t.id;
-      });
-      textureContainer.appendChild(el);
-    });
-
-    // Mood chips
-    const moodContainer = document.getElementById('moodChips');
-    moods.forEach(m => {
-      const el = document.createElement('div');
-      el.className = `chip-option${m.id === state.mood ? ' selected' : ''}`;
-      el.textContent = m.label;
-      el.dataset.value = m.id;
-      el.addEventListener('click', () => {
-        moodContainer.querySelectorAll('.chip-option').forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        state.mood = m.id;
-      });
-      moodContainer.appendChild(el);
-    });
-
-    // =============================================
-    // Skill Detail Logic
-    // =============================================
     function openSkill(skill) {
+      currentSkill = skill.id;
       document.getElementById('detailTitle').textContent = skill.title;
       document.getElementById('detailTags').innerHTML = skill.tags.map(t => `<span>${t}</span>`).join('');
       document.getElementById('detailDesc').textContent = skill.desc;
+      document.getElementById('detailBanner').innerHTML = skill.banner
+        ? `<img src="/ai-skills/examples/${skill.banner}" alt="${skill.title}">` : '';
 
-      // Banner: cycle through example images
-      const banner = document.getElementById('detailBanner');
-      const img = skill.examples[1] || skill.examples[0] || '';
-      banner.innerHTML = img ? `<img src="/ai-skills/examples/${img}" alt="${skill.title}">` : '';
+      // Render form
+      const def = FORM_DEFS[skill.id];
+      formFields.innerHTML = def.html();
+      if (def.init) def.init();
 
-      detail.classList.add('active');
       output.classList.remove('active');
+      detail.classList.add('active');
       detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -687,26 +751,16 @@
       output.classList.remove('active');
     });
 
-    // Form submit
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const subject = document.getElementById('fSubject').value.trim();
-      if (!subject) {
-        document.getElementById('fSubject').focus();
-        showToast('请填写主题/主体');
+      if (!currentSkill) return;
+      const def = FORM_DEFS[currentSkill];
+      if (!def) return;
+      const prompt = def.generate();
+      if (!prompt) {
+        showToast('请填写必填字段');
         return;
       }
-      const data = {
-        subject,
-        text: document.getElementById('fText').value.trim(),
-        color: state.color,
-        paper: state.paper,
-        layout: state.layout,
-        anchor: state.anchor,
-        texture: state.texture,
-        mood: state.mood
-      };
-      const prompt = generatePrompt(data);
       result.value = prompt;
       output.classList.add('active');
       copyBtn.textContent = '📋 复制';
