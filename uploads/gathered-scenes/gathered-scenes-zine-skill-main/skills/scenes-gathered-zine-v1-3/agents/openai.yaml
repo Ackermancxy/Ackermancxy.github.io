@@ -1,4 +1,4 @@
 interface:
   display_name: "实景拼贴 · Gathered Scenes v1.3"
-  short_description: "以简化插画、结构性色彩和手撕纤维边缘重组真实照片的纸像海报工具"
-  default_prompt: "Use $scenes-gathered-zine-v1-3 to transform this photo into a source-faithful paper poster with simplified abstract forms, integrated chromatic structure, and a visible hand-torn fibrous edge."
+  short_description: "让真实摄影与纸上插画在同一连续场景中无缝转译的纸像海报工具"
+  default_prompt: "Use $scenes-gathered-zine-v1-3 to transform this photo into a source-faithful paper poster where photography and simplified illustration remain exactly registered as one continuous scene, changing only visual medium across a visible hand-torn fibrous edge, with integrated chromatic structure and active negative space."

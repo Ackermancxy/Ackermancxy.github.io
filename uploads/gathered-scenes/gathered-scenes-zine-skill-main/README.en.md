@@ -28,7 +28,7 @@ The photograph provides the facts. Art direction decides how they remain.
 photograph → observe → extract relationships → choose a path → bind a new page
 ```
 
-The visual system follows five principles: truthful photography as an anchor, illustration as a field, color as structure, negative space as an active voice, and tactile paper boundaries as material language.
+The visual system follows five principles: truthful photography as the sole factual source, photography and illustration registered within one continuous scene, color as structure, negative space as an active voice, and tactile paper boundaries as material language.
 
 ![We collect fragments of the world and bind fleeting moments into a new page](assets/brand/gathered-scenes-manifesto.jpg)
 
@@ -38,12 +38,12 @@ The visual system follows five principles: truthful photography as an anchor, il
 | --- | --- | --- |
 | **Best for** | Keeping the source photograph and its identity | Creating a fully independent illustrated artwork |
 | **Role of the photo** | A truthful visual anchor in the final poster | Semantic and emotional evidence only; no source pixels remain |
-| **Method** | Photography, source-derived abstraction, structural color, and torn paper | Proposition, tension, visual metaphor, paper, color, and authorial type |
+| **Method** | Photography and illustration share one registered viewpoint and scene geometry; only the medium changes across torn paper | Proposition, tension, visual metaphor, paper, color, and authorial type |
 | **Skill** | `$scenes-gathered-zine-v1-3` | `$scene-distillation-zine-v1-3` |
 
 ### 01 · 实景拼贴 / Gathered Scenes
 
-`scenes-gathered-zine-v1-3` keeps the photograph's irreplaceable spatial relationships. It extends the scene through simplified abstract forms, one high-chroma structural hue, active negative space, and a visible hand-torn fibrous edge.
+`scenes-gathered-zine-v1-3` treats the photograph as the sole factual scene. Photography and simplified illustration share one viewpoint, projection, and scene coordinate system: subject identity, position, scale, occlusion, and light remain continuous while only medium, detail density, one high-chroma structural hue, and the hand-torn paper surface change.
 
 ```text
 Use $scenes-gathered-zine-v1-3 to turn this photo into a Gathered Scenes poster.
@@ -69,8 +69,8 @@ Do not preserve the photograph itself; express “approaching and missing.”
 | --- | --- |
 | **01 · Observe** | Locate the core subject, spatial relationships, direction, weight, and quiet areas |
 | **02 · Reduce** | Keep the minimum that makes this particular scene recognizable |
-| **03 · Translate** | Turn contours, paths, light, material, or emotion into paper-native form and color |
-| **04 · Compose** | Build a clear eye path through image, type, boundary, and negative space |
+| **03 · Translate** | Simplify contour, path, light, and detail in the source coordinates while changing only the paper medium |
+| **04 · Compose** | Register photography and illustration so subjects, perspective, occlusion, and light remain continuous, then place type and negative space |
 | **05 · Bind** | Deliver a flat, restrained, tactile artwork that stands on its own |
 
 ## Scene archive
@@ -91,7 +91,7 @@ The church tower remains a truthful anchor while the dense city becomes a blue p
 | :---: | :---: |
 | <img src="examples/real-scene-collage/02-winter-crossing/source.jpg" alt="Winter bridge source photograph" width="440"> | <img src="examples/real-scene-collage/02-winter-crossing/result.jpg" alt="Winter Crossing finished work" width="440"> |
 
-The line of people and its reflection stay photographic as the snowy forest expands into a quiet blue-gray paper field. [Read the field note](examples/real-scene-collage/02-winter-crossing/)
+The bridge, people, reflections, and snowy forest retain their source positions and depth relationships as the same registered scene changes continuously from photography into quiet blue-gray paper media. [Read the field note](examples/real-scene-collage/02-winter-crossing/)
 
 ### Scene Distillation 01 · Time Waves Back
 

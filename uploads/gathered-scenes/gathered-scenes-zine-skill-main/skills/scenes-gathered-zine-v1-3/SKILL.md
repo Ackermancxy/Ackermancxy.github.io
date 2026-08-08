@@ -1,19 +1,22 @@
 ---
 name: scenes-gathered-zine-v1-3
-description: "Transform a user-supplied photo into a vertical 3:5 Gathered Scenes Zine poster that anchors truthful photography inside a spacious source-derived abstract illustration field, aggressively compresses dense foliage and other micro-detail into a few large quiet forms, integrates one high-chroma hue as compositional structure, and preserves a visibly hand-torn fibrous photo-to-paper edge. Use when the user wants a tactile minimal paper collage with simplified illustration, active negative space, restrained English-default, Chinese, or bilingual micro-text, and an unmistakable but quiet torn-paper boundary."
+description: "Transform a user-supplied photo into a vertical 3:5 Gathered Scenes Zine poster where truthful photography and simplified paper illustration render one continuously registered real scene. Preserve subject identity, coordinates, perspective, scale, occlusion, and lighting across a visibly hand-torn fibrous medium boundary while compressing dense foliage and other micro-detail into a few large quiet forms, integrating one high-chroma hue as compositional structure, and retaining active negative space with restrained English-default, Chinese, or bilingual micro-text."
 ---
 
 # 实景拼贴 · Gathered Scenes Zine v1.3
 
 **作者 / Author：Zeejay0**
 
-Create a calm, tactile poster from a supplied photo. Preserve the signature **真景为锚、插画成场、色彩成结构、撕纸成界、纸面会呼吸**:
+Create a calm, tactile poster from a supplied photo. Preserve the signature **真景为锚、同景转译、色彩成结构、撕纸成界、纸面会呼吸**:
 
-- keep the photographic scene truthful;
-- let a larger abstract illustration field reinterpret selected source elements instead of tracing them;
+- treat the reference photograph as the only factual scene;
+- render photography and paper illustration as two media inside one continuous scene coordinate system;
+- keep subject identity, position, projected scale, perspective, occlusion, and lighting continuous wherever the medium changes;
+- keep photographic regions visibly photographic and make same-scene illustrated regions unmistakably paper-native even at thumbnail size;
+- let a large same-scene illustrated region simplify the source without tracing it, inventing a second composition, or spreading one uniform illustrated treatment across the whole image;
 - compress foliage, branches, leaves, crowds, texture, and other complex detail into a few quiet graphic forms;
 - make the added hue share source-derived shapes with the illustration instead of floating as decoration;
-- keep a visible hand-torn fibrous edge where photography becomes paper;
+- keep a visible hand-torn fibrous edge where photography becomes paper without breaking the represented reality;
 - make omission and negative space active parts of the illustration.
 
 Return the generated image plus one brief creative rationale by default. Include the final prompt or detailed composition notes only when the user explicitly asks for them.
@@ -22,15 +25,16 @@ Return the generated image plus one brief creative rationale by default. Include
 
 Resolve conflicts in this order:
 
-1. Preserve the scene's identity and key spatial relationship.
-2. Keep the photographic portion truthful.
-3. Simplify complex organic or repetitive detail into a few large legible masses and directional gestures.
-4. Turn the illustration into a large designed field rather than a literal copy or small peripheral echo.
-5. Build photography, illustration, and one added hue on the same source-derived compositional skeleton.
-6. Use the added hue as chromatic structure that changes balance, movement, figure–ground, or meaning.
-7. Preserve substantial quiet space inside and around the enlarged illustration.
-8. Preserve a tactile hand-torn photo edge at the primary material handoff.
-9. Add one restrained, source-aware micro-text element without weakening the image hierarchy.
+1. Preserve one continuous real scene with the same subjects in the same scene coordinates across every medium boundary.
+2. Preserve one camera, viewpoint, projection, horizon system, perspective, projected scale, depth order, occlusion, and lighting logic across the whole poster.
+3. Keep the photographic portion truthful.
+4. Simplify complex organic or repetitive detail into a few large legible masses and directional gestures without moving or replacing the underlying subjects.
+5. Let illustration translate a large area of the same scene rather than becoming a literal copy, peripheral decoration, or independent composition.
+6. Build photography, illustration, and one added hue on the same source-derived compositional skeleton.
+7. Use the added hue as chromatic structure that changes balance, movement, figure–ground, or meaning.
+8. Preserve substantial quiet space inside and around the enlarged illustration.
+9. Preserve a tactile hand-torn photo edge at the primary material handoff without using it to hide spatial discontinuity.
+10. Add one restrained, source-aware micro-text element without weakening the image hierarchy.
 
 Preserve relationships before details. Remove detail before adding decoration.
 
@@ -48,7 +52,10 @@ Build an internal **Scene Card**:
 
 - **Core subjects:** the 1–2 elements that make the scene identifiable.
 - **Supporting elements:** 2–3 elements that establish place or atmosphere.
-- **Spatial invariants:** horizon, relative positions, scale, perspective, facing direction, path, silhouette, or overlap that must survive.
+- **Spatial invariants:** shared camera position, viewpoint, projection, horizon, vanishing directions, relative positions, projected scale, perspective, facing direction, path, silhouette, depth order, and overlap that must survive.
+- **Boundary-crossing ledger:** every subject, contour, plane, path, shadow, reflection, or depth layer likely to cross a medium boundary; record its identity, edge endpoints, tangent direction, thickness, orientation, and adjacent relationships.
+- **Light continuity:** source direction, shadow direction, color temperature, weather, and brightness gradient that must remain consistent.
+- **Edge evidence:** visible information at each source-frame edge that can support a conservative continuation of the immediately adjacent environment; do not infer a new location or second scene.
 - **Dominant gesture:** the strongest horizontal, vertical, diagonal, curve, convergence, gaze, or movement.
 - **Visual-weight map:** weight created by area, darkness, saturation, texture, faces, isolation, and edge tension.
 - **Native color atmosphere:** dominant hue family, temperature, value range, and existing saturated areas.
@@ -56,24 +63,28 @@ Build an internal **Scene Card**:
 - **Natural quiet areas:** sky, water, wall, ground, haze, or low-information regions.
 - **Semantic minimum:** the smallest combination of forms and relationships that would still identify this particular scene.
 
-Treat the photo as the factual source. Treat the illustration as an interpretation of that fact.
+Treat the photo as the only factual source. Treat the illustration as an in-place material translation of that same fact: the medium may change, but represented reality and scene geometry may not.
 
 ## Photo-Specific Prompt Compiler
 
 Resolve these visible fields in order:
 
 1. **Canvas:** ratio, paper surface, flat scan, and absence of mockup framing.
-2. **Attention geometry:** dominant field, subordinate field, focal area, quiet area, and eye path.
-3. **Scene invariants:** exact relationships that must remain recognizable.
-4. **Photo–illustration allocation:** what remains photographic and what becomes paper illustration.
-5. **Source-shape extraction:** which one or two visible shapes can continue across photography, illustration, and color.
-6. **Abstraction map:** what to retain, merge, omit, transform, and leave blank.
-7. **Illustration field:** primary grammar, field extent, active printed density, complexity-compression target, supporting marks, and internal negative-space share.
-8. **Chromatic structure:** exact hue, source-derived shape, integration mode, material, opacity, visual function, and approximate area.
-9. **Torn-paper handoff:** visible hand-torn contour, fibrous fringe, exposed paper tone, affected perimeter, and any clearly subordinate residue.
-10. **Reproduction texture:** paper fibers, grain, ink behavior, scan noise, and flat lighting.
-11. **Micro-text system:** exact supplied or authored wording, language mode, hierarchy, placement, scale, ink value, and paper-integrated lettering treatment.
-12. **Mood and hard avoids:** emotional temperature and prohibited aesthetics.
+2. **Common scene registration:** one camera, viewpoint, projection, horizon system, vanishing directions, scene coordinate system, depth order, and lighting logic for the whole poster.
+3. **Attention geometry:** dominant medium, subordinate medium, focal area, quiet area, and eye path through one uninterrupted scene.
+4. **Scene invariants:** exact relationships that must remain recognizable.
+5. **Boundary-crossing ledger:** which real subjects and contours cross each medium boundary, with identity, endpoints, tangent, thickness, scale, occlusion, shadow, and reflection alignment.
+6. **Photo–illustration allocation:** what remains photographic and what becomes paper illustration in place.
+7. **Source-shape extraction:** which one or two visible shapes can continue across photography, illustration, and color.
+8. **Out-of-frame continuation limits:** only adjacent environment supported by source-edge evidence; no invented location, new horizon, or second scene.
+9. **Abstraction map:** what to retain, merge, omit, transform, and leave blank without moving the underlying scene geometry.
+10. **Same-scene illustration region:** primary grammar, extent, active printed density, complexity-compression target, supporting marks, and internal negative-space share.
+11. **Chromatic structure:** exact hue, source-derived shape, integration mode, material, opacity, visual function, and approximate area.
+12. **Torn-paper handoff:** visible hand-torn contour, fibrous fringe, exposed paper tone, affected perimeter, and exact scene alignment on both sides.
+13. **Reproduction texture:** paper fibers, grain, ink behavior, scan noise, and flat lighting.
+14. **Micro-text system:** exact supplied or authored wording, language mode, hierarchy, placement, scale, ink value, and paper-integrated lettering treatment.
+15. **Continuity rejection conditions:** broken contours, shifted horizons, changed vanishing direction, scale jumps, duplicate or substitute subjects, reversed occlusion, inconsistent light or reflection, unsupported scenery, detached inset, or independent illustrated composition.
+16. **Mood and hard avoids:** emotional temperature and prohibited aesthetics.
 
 Compile only instructions that can become visible pixels. Do not include design-theory explanations, file paths, metadata, or analysis notes in the final generation prompt.
 
@@ -87,7 +98,8 @@ Use **medium abstraction** by default:
 - remove roughly 60–80% of small descriptive detail;
 - merge repeated or adjacent forms into larger masses;
 - replace realistic shading with flat ink, broken contour, sparse hatching, halftone, or paper cutout;
-- allow the illustration to depart from literal scale or crop when the scene remains identifiable;
+- allow the composition to crop the whole registered scene, but do not move, independently rescale, rotate, duplicate, or replace a subject inside an illustrated region;
+- preserve the projected scale, main contour, direction, depth order, occlusion, and lighting of every subject that crosses a medium boundary;
 - keep at least one unmistakable source-specific feature.
 
 Use lower abstraction only when a face, object, building, or location would otherwise become unrecognizable. Use higher abstraction only when the user explicitly requests it or when the scene's semantic minimum remains clear.
@@ -152,7 +164,7 @@ Preserve scene identity through:
 - one or two source-specific shapes;
 - the original visual tension between heavy and quiet areas.
 
-The illustration may simplify anatomy, texture, scale, and minor perspective. It may not invent unrelated scenery or replace the original spatial logic with generic motifs.
+The illustration may simplify internal anatomy, texture, repeated detail, and realistic shading while preserving recognizable identity. It may not change the projected scale, position, facing direction, main contour, perspective, depth order, occlusion, light direction, or shadow logic of a boundary-crossing subject. It may not invent scenery, replace a source object with a symbolic substitute, duplicate a subject for visual balance, or replace the original spatial logic with generic motifs.
 
 ## Composition System
 
@@ -168,17 +180,19 @@ The illustration may simplify anatomy, texture, scale, and minor perspective. It
 
 ### Flexible Layout Ranges
 
-- **Transformative seam:** photography about 30–50%; continue one real subject, horizon, path, shadow, or silhouette across the boundary as a larger illustration field.
-- **Underprint overlay:** photography about 35–60%; let a broad, low-density illustration and chromatic underprint extend behind and partly through the photograph without damaging defining detail.
-- **Photo anchor + expansive field:** photography about 25–45%, illustration field about 45–70%; keep the factual scene in one strong anchor while the abstraction carries the wider composition.
-- **Directional split:** begin near 55/45 to 65/35, but align the split with a real horizon, gaze, path, structural edge, or convergence and let illustration cross the split selectively.
-- **Irregular fragments:** combined photo fragments about 25–50%; keep the core subject in the largest fragment and connect the fragments with one shared illustration mass or chromatic structure.
+Every layout allocates rendering media inside one registered scene. Never build separate photography and illustration compositions. A larger illustrated area means more of the same scene is translated into paper media, not that illustrated subjects become larger or migrate. An inset is an in-place medium-change region at its true scene coordinates, not a detached card. When the composition extends beyond the source frame, continue only the immediately adjacent environment supported by visible edge evidence.
+
+- **Transformative seam:** photography about 30–50%; continue every real subject, horizon, path, shadow, reflection, or silhouette that crosses the boundary into a larger same-scene illustrated region at identical coordinates.
+- **Underprint overlay:** photography about 35–60%; convert a broad, low-density region and chromatic underprint in place without damaging defining detail or changing underlying object positions.
+- **Photo anchor + expansive translation:** photography about 25–45%, same-scene illustration about 45–70%; keep the factual scene in exact registration while paper media carries more of the same continuous space.
+- **Directional split:** begin near 55/45 to 65/35, but align the split with a real horizon, gaze, path, structural edge, or convergence and preserve exact cross-boundary geometry.
+- **Irregular regions:** combined photographic regions about 25–50%; keep each at its true scene position and connect them through the same registered subjects, illustration mass, or chromatic structure.
 
 Avoid repeatedly defaulting to a centered photo with text beneath it. Select the layout from the source's dominant gesture and visual-weight map. Use these as starting ranges, then correct by actual visual weight; never sacrifice scene identity or illustration clarity to reach a number.
 
 ## Photo–Illustration Edge Transition
 
-Treat the boundary as a real paper object. Use a **visible hand-torn fibrous edge as the default and primary transition** wherever the main photographic anchor meets the cream paper or abstract illustration. Direct transformation, speckles, or ghost marks may support the handoff, but they may not replace the tactile tear.
+Treat the boundary as a real paper object and only a material change, never a break in represented reality. Use a **visible hand-torn fibrous edge as the default and primary transition** wherever photography becomes paper illustration. Direct transformation, speckles, or ghost marks may support the handoff, but they may not replace the tactile tear or obscure scene misregistration.
 
 Build the torn edge with:
 
@@ -192,7 +206,9 @@ Control the transition:
 
 - Keep the active fibrous band narrow, roughly 1–4% of the poster's short edge.
 - Make the torn contour visibly legible along the main photo–paper handoff and roughly 35–70% of the visible photographic perimeter; avoid both a perfectly uniform frame and an almost invisible edge.
-- Let illustration or chromatic structure cross, emerge from, or pass behind selected torn segments, while keeping the paper tear itself readable.
+- Match every crossing contour on both sides of the fiber band by endpoint, tangent direction, thickness, projected scale, depth order, and light logic. The narrow fibers may hide only a small material strip; they may not conceal a spatial jump.
+- Let illustration or chromatic structure cross, emerge from, or pass behind selected torn segments at the exact source position, while keeping the paper tear itself readable.
+- For inset regions, inspect and register the complete perimeter rather than only one edge.
 - Use speckled dissolve, halftone crumbs, or one to three faint ghost marks only as subordinate residue near one or two compositional pressure points.
 - Keep dots irregular in scale and spacing. Keep symbols incomplete, faint, nonverbal, and print-derived.
 - Use paper-tone, graphite, charcoal, faded brown-black, or the existing single chromatic hue; introduce no second hue.
@@ -223,7 +239,7 @@ Specify an exact color such as fully saturated cobalt blue, opaque ultramarine, 
 - **Counterform:** derive a colored positive or negative shape from a source silhouette, gap, shadow, or quiet area.
 - **Directional rhythm:** repeat or stretch one source-derived colored form along a gaze, path, railing, ridge, shoreline, or convergence.
 
-Choose one integration mode and one primary function: focal reinforcement, counterweight, photo–illustration bridge, eye-path direction, figure–ground clarification, or semantic emphasis.
+Choose one integration mode and one primary function: focal reinforcement, counterweight, photo–illustration bridge, eye-path direction, figure–ground clarification, or semantic emphasis. Attach color to a real source plane, contour, path, shadow, gap, or rhythm at its true scene position. Color may change material appearance, but it may not move, replace, or duplicate the underlying subject. Repeat a colored form only when the source itself contains that repeated rhythm.
 
 Require the chromatic structure to satisfy at least two of these tests:
 
@@ -342,8 +358,15 @@ Use decisive language. State which details must disappear as clearly as which fo
 
 ## Targeted Correction
 
-Regenerate at most once, correcting only the observed failure:
+Regenerate at most once, correcting only the observed failure. Continuity failures take priority over aesthetic refinement:
 
+- **Independent scene:** remove the separate illustrated composition and translate the source scene in place using the shared camera and scene coordinates.
+- **Boundary misregistration:** realign contour endpoints, tangents, thickness, horizon, vanishing directions, scale, depth order, shadow, and reflection across the complete medium boundary.
+- **Subject substitution or duplication:** restore the original subject once, at its exact source position and projected scale, in the appropriate medium.
+- **Occlusion reversal:** restore the original front-to-back relationship wherever subjects overlap.
+- **Light discontinuity:** restore the source light direction, shadow direction, weather, brightness gradient, and color-temperature logic.
+- **Unsupported extension:** remove invented scenery and continue only the immediately adjacent environment supported by source-edge evidence.
+- **Detached inset:** return the inset to its true coordinates as an in-place medium-change region and register its full perimeter.
 - **Scene loss:** restore the missing spatial invariant or source-specific form.
 - **Over-literal illustration:** remove at least half the remaining detail, merge forms, break contours, and enlarge quiet paper.
 - **Dense foliage:** collapse individual leaves, needles, and fine twigs into one main mass, one to three branch gestures, and at most two secondary clusters.
@@ -356,11 +379,13 @@ Regenerate at most once, correcting only the observed failure:
 - **Decorative color:** replace the detached mark with a source-derived continuation, replacement, underprint, counterform, or directional rhythm; make it pass the structural removal test.
 - **Chromatic dominance:** reduce area, opacity, or competing echoes while preserving the color's compositional function.
 - **Text failure:** restore the exact wording, reduce its size or contrast, move it into a quiet-paper area, or make the lettering more paper-integrated.
+- **Weak medium distinction:** restore truthful photographic texture outside the translated region, simplify the illustrated region into clearly paper-native masses, and make the narrow torn perimeter legible without changing scene registration.
+- **Uniform whole-image stylization:** confine illustration to its allocated same-scene region and restore the remaining source photography.
 - **Damaged photography:** restore natural color, texture, perspective, and recognizable detail.
 
 ## Hard Avoids
 
-Avoid literal traced illustration, individual leaf-by-leaf or needle-by-needle rendering, dense branch filigree, lace-like botanical illustration, repeated organic marks covering the field, timid peripheral illustration, full-scene photocopy, evenly detailed woodcut rendering, dense hatching everywhere, complete object outlines, filler decoration, generic abstract motifs, detached corner color blocks, isolated brush swatches, arbitrary bright dots, generic geometric accents unrelated to the source, color added after the composition is solved, clean digital photo masks, crisp rectangular clipping, sticker-like white outlines, decorative uniform deckled frames, heavy paper shadows, curled corners, dense scrapbooking, uniform dotted borders, repeated decorative icons, legible pseudo-symbol systems, multiple competing illustration styles, multiple added hues, commercial advertising hierarchy, logos, CTA, glossy mockups, neon, 3D, cinematic lighting, depth of field, fashion-editorial drama, cute cartoon or anime treatment, excessive sharpening, AI smoothing, large or polished digital typography, bold display all-caps, keyword spam, mixed decorative separators, illegible or misspelled text, long text blocks, invented quotations or attributions, faux metadata, and watermarks.
+Avoid an independent illustrated scene, a second horizon or camera angle, detached or floating panels, misplaced insets, unsupported out-of-frame scenery, substituted or duplicated subjects, broken cross-boundary contours, shifted horizon or vanishing direction, scale jumps, depth-order or occlusion reversals, mismatched reflections, changed light or weather, wide paper gaps used to hide misregistration, literal traced illustration, individual leaf-by-leaf or needle-by-needle rendering, dense branch filigree, lace-like botanical illustration, repeated organic marks covering the field, timid peripheral illustration, full-scene photocopy, evenly detailed woodcut rendering, dense hatching everywhere, complete object outlines, filler decoration, generic abstract motifs, detached corner color blocks, isolated brush swatches, arbitrary bright dots, generic geometric accents unrelated to the source, color added after the composition is solved, clean digital photo masks, crisp rectangular clipping, sticker-like white outlines, decorative uniform deckled frames, heavy paper shadows, curled corners, dense scrapbooking, uniform dotted borders, repeated decorative icons, legible pseudo-symbol systems, multiple competing illustration styles, multiple added hues, commercial advertising hierarchy, logos, CTA, glossy mockups, neon, 3D, cinematic lighting, depth of field, fashion-editorial drama, cute cartoon or anime treatment, excessive sharpening, AI smoothing, large or polished digital typography, bold display all-caps, keyword spam, mixed decorative separators, illegible or misspelled text, long text blocks, invented quotations or attributions, faux metadata, and watermarks.
 
 ## Output Format
 
@@ -392,11 +417,19 @@ If the user explicitly requests the prompt or detailed explanation, add only the
 
 ## Quality Gate
 
-Before returning, verify:
+Before returning, verify continuity first. Any failure in the following checks is a hard rejection even when the poster is aesthetically strong:
 
+- Does the whole result represent one continuous real scene rather than two related compositions?
+- Do photography and illustration share one camera, viewpoint, projection, horizon system, vanishing directions, and scene coordinate system?
+- At every medium boundary, do crossing subjects preserve identity, exact position, projected scale, contour endpoints, tangent direction, thickness, facing direction, depth order, and occlusion?
+- Do light direction, shadow direction, reflection alignment, weather, brightness gradient, and color-temperature logic remain continuous?
+- Are all out-of-frame additions limited to the immediately adjacent environment supported by source-edge evidence?
+- Are inset and background layouts in-place medium allocations rather than detached panels or overlays?
 - Does the result still read as the supplied scene?
 - Are the semantic minimum and key spatial relationship recognizable?
-- Is the photographic section truthful?
+- Is the photographic section visibly truthful in natural texture, color, and tonal detail?
+- Is the illustrated section unmistakably paper-native at thumbnail size rather than a subtle filter or whole-image restyling?
+- Are both media clearly distinguishable while remaining geometrically registered as one scene?
 - Does the illustration reinterpret rather than trace the source?
 - Has most nonessential detail been removed?
 - Is there one primary illustration grammar?
