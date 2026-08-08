@@ -616,6 +616,10 @@
                 <div class="layout-grid" id="gs-layout"></div></div>
               <div class="form-group full" id="gs-layout-custom-wrap" style="margin-top:16px;display:none;"><label>自定义布局 <span class="hint">— 用中文描述你想要的实景与虚拟插画的布局方式</span></label>
                 <textarea id="gsLayoutCustom" placeholder="例如：照片放在左上角占三分之一，右下角是手绘插画延伸，中间用不规则的撕纸边缘过渡..."></textarea></div>
+              <div class="form-group full" id="gs-layout-visual-wrap" style="margin-top:16px;display:none;">
+                <iframe id="gs-layout-iframe" src="/layout-editor/" style="width:100%;height:520px;border:1px solid var(--border);border-radius:8px;background:#f3efe8;" allow="clipboard-write"></iframe>
+                <div style="font-size:0.7rem;color:var(--text-muted);margin-top:6px;">在上方编辑器中拖拽调整布局后，点击「应用」即可</div>
+              </div>
               <div class="form-group full" style="margin-top:16px;"><label>插画来源 <span class="hint">— 插画区域描绘的是原图内容转译，还是原图之外的场景延伸</span></label>
                 <div class="chip-grid" id="gs-illust-source"></div></div>
             </div>
@@ -664,16 +668,37 @@
           // Layout mode toggle
           buildChips('gs-layout-mode', [
             { id: 'preset', label: '预设布局' },
-            { id: 'custom', label: '自定义描述' }
+            { id: 'custom', label: '自定义描述' },
+            { id: 'visual', label: '可视化编辑' }
           ], '_gsLayoutMode', 'preset');
           function toggleLayoutMode(mode) {
             const presetWrap = document.getElementById('gs-layout-preset-wrap');
             const customWrap = document.getElementById('gs-layout-custom-wrap');
-            if (!presetWrap || !customWrap) return;
-            presetWrap.style.display = mode === 'custom' ? 'none' : '';
-            customWrap.style.display = mode === 'custom' ? '' : 'none';
+            const visualWrap = document.getElementById('gs-layout-visual-wrap');
+            if (presetWrap) presetWrap.style.display = mode === 'preset' ? '' : 'none';
+            if (customWrap) customWrap.style.display = mode === 'custom' ? '' : 'none';
+            if (visualWrap) visualWrap.style.display = mode === 'visual' ? '' : 'none';
           }
           toggleLayoutMode('preset');
+          // Listen for layout data from visual editor iframe
+          window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'gs-layout') {
+              window._gsVisualLayout = e.data.layout;
+              // Show a subtle indicator that layout was applied
+              const visualWrap = document.getElementById('gs-layout-visual-wrap');
+              if (visualWrap) {
+                const indicator = visualWrap.querySelector('.layout-applied');
+                if (!indicator) {
+                  const div = document.createElement('div');
+                  div.className = 'layout-applied';
+                  div.style.cssText = 'font-size:0.7rem;color:#5a9a6e;margin-top:4px;';
+                  div.textContent = '布局已应用 ✓';
+                  visualWrap.appendChild(div);
+                  setTimeout(() => { if (div.parentNode) div.remove(); }, 3000);
+                }
+              }
+            }
+          });
           document.querySelectorAll('#gs-layout-mode .chip-option').forEach(chip => {
             chip.addEventListener('click', function() {
               setTimeout(() => toggleLayoutMode(window._gsLayoutMode), 10);
@@ -765,7 +790,7 @@
           }
 
           window._gsColor = 'cobalt-blue'; window._gsPaper = 'warm-cream';
-          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top'; window._gsLayoutMode = 'preset'; window._gsIllustSource = 'translate'; window._gsIllustSat = 50;
+          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top'; window._gsLayoutMode = 'preset'; window._gsIllustSource = 'translate'; window._gsIllustSat = 50; window._gsVisualLayout = '';
         },
         generate: function() {
           const scene = document.getElementById('gsScene').value.trim();
@@ -812,7 +837,10 @@
             'photo-bg': 'Composition: photo-bg. Photography remains visible across the full registered scene. Convert selected source regions in place into paper illustration across about 30-45% of the frame, attaching every illustrated mark to the exact object, plane, shadow, path, or contour it transforms. Do not add hovering decoration, duplicate subjects, or a second scene.',
             'illustration-bg': 'Composition: illustration-bg. Paper illustration is the dominant medium across the full registered scene. Preserve photography in selected source regions covering about 30-45% of the frame, exactly where those regions belong in the complete scene. Their boundaries reveal the same objects and geometry in another medium; they are never detached photographs or separate compositions.'
           };
-          const layoutDesc = layoutMode === 'custom' && customLayout
+          const visualLayout = window._gsVisualLayout || '';
+          const layoutDesc = layoutMode === 'visual' && visualLayout
+            ? `Composition: user-defined via visual editor. ${visualLayout} Follow the same scene-registration rules: one continuous scene, single viewpoint, matched contours across all medium boundaries with hand-torn fibrous edges.`
+            : layoutMode === 'custom' && customLayout
             ? `Composition: user-specified layout. ${customLayout} Follow the same scene-registration rules: one continuous scene, single viewpoint, matched contours across all medium boundaries with hand-torn fibrous edges.`
             : (gsLayoutMap[gsLayout] || gsLayoutMap['photo-top']);
 

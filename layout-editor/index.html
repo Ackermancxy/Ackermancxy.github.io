@@ -169,6 +169,7 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
   <div class="chip-row" id="ratioRow"></div>
   <button class="act swap" id="layerBtn">插画在上</button>
   <div class="chip-row" id="presetRow"></div>
+  <button class="act go" id="applyBtn" style="display:none">应用</button>
   <button class="act go" id="copyBtn">复制</button>
 </div>
 
@@ -314,10 +315,22 @@ chips('presetRow',[
 ],it=>{s.px=it.px;s.py=it.py;s.pw=it.pw;s.ph=it.ph;apply()});
 
 // --- copy ---
-document.getElementById('copyBtn').addEventListener('click',()=>{
+function buildDesc(){
   const who=s.photoOnTop?'photo':'illustration';
-  const desc=`Composition: user-defined. ${s.rw}:${s.rh} canvas. The ${who} occupies (${s.px}%,${s.py}%) ${s.pw}%×${s.ph}%. The opposite medium fills the remaining canvas. One continuous scene across the boundary.`;
-  navigator.clipboard.writeText(desc).then(()=>showToast('已复制'));
+  return `Composition: user-defined. ${s.rw}:${s.rh} canvas. The ${who} occupies (${s.px}%,${s.py}%) ${s.pw}%×${s.ph}%. The opposite medium fills the remaining canvas. One continuous scene across the boundary.`;
+}
+
+// Show apply button when embedded in iframe
+if(window!==window.parent){
+  document.getElementById('applyBtn').style.display='';
+  document.getElementById('applyBtn').addEventListener('click',()=>{
+    window.parent.postMessage({type:'gs-layout',layout:buildDesc()},'*');
+    showToast('已应用');
+  });
+}
+
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  navigator.clipboard.writeText(buildDesc()).then(()=>showToast('已复制'));
 });
 
 function showToast(msg){
