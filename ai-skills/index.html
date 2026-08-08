@@ -395,7 +395,8 @@
                 <input type="text" id="fText" placeholder="留空则自动生成"></div>
             </div>
             <div><div class="form-section-label">色彩</div>
-              <div class="form-group"><label>强调色</label><div class="color-swatches" id="zp-color"></div></div>
+              <div class="form-group"><label>色彩模式</label><div class="chip-grid" id="zp-colorMode"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>强调色 <span class="hint">— 彩色模式有效</span></label><div class="color-swatches" id="zp-color"></div></div>
               <div class="form-group" style="margin-top:16px;"><label>纸张色调</label><div class="chip-grid" id="zp-paper"></div></div>
             </div>
             <div><div class="form-section-label">布局</div>
@@ -409,6 +410,9 @@
             </div>`;
         },
         init: function() {
+          buildChips('zp-colorMode', [
+            { id: 'color', label: '彩色' }, { id: 'bw', label: '黑白' }
+          ], '_zpColorMode', 'color');
           buildColorSwatches('zp-color', '_zpColor', 'orange');
           buildChips('zp-paper', PAPERS, '_zpPaper', 'warm-cream');
           buildChips('zp-texture', [
@@ -474,7 +478,7 @@
             });
             ac.appendChild(el);
           });
-          window._zpColor = 'orange'; window._zpPaper = 'warm-cream';
+          window._zpColor = 'orange'; window._zpPaper = 'warm-cream'; window._zpColorMode = 'color';
           window._zpLayout = 'dual-panel'; window._zpAnchor = 'flat-silhouette';
           window._zpTexture = 'risograph-grain'; window._zpMood = 'quiet';
         },
@@ -484,6 +488,7 @@
           const text = document.getElementById('fText').value.trim();
           const color = COLOR_MAP[window._zpColor || 'orange'];
           const paper = PAPER_MAP[window._zpPaper || 'warm-cream'];
+          const colorMode = window._zpColorMode || 'color';
           const layout = window._zpLayout || 'dual-panel';
           const anchor = window._zpAnchor || 'flat-silhouette';
           const texture = window._zpTexture || 'risograph-grain';
@@ -523,7 +528,9 @@
           return [
             `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. 70% to 90% of the canvas is empty paper. ${layoutDesc}`,
             `The image anchor is ${anchorDesc}. The anchor treatment uses low-contrast photocopy softness, with subtle ink bleed and a slightly misregistered feel that makes it belong to the paper.`,
-            `${textLine}Small serif or typewriter typography, set in a sparse arrangement. The single high-chroma accent is ${color}, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size. Print defects include ${texture.replace(/-/g, ' ')}, with subtle scan noise and paper fiber texture throughout.`,
+            `${textLine}Small serif or typewriter typography, set in a sparse arrangement. ${colorMode === 'bw'
+              ? 'The entire poster is black-and-white or grayscale — no chromatic color anywhere. The accent comes from pure black ink, dense charcoal, or silver gelatin tones, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size.'
+              : `The single high-chroma accent is ${color}, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size.`} Print defects include ${texture.replace(/-/g, ' ')}, with subtle scan noise and paper fiber texture throughout.`,
             `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. The overall mood is ${moodMap}: a Japanese/Korean indie zine or minimal editorial poster. No full-bleed scene, no commercial headline, no glossy mockup, no 3D, no cinematic lighting, no neon, no dense composition, no long clean text blocks.`
           ].join('\n\n');
         }
