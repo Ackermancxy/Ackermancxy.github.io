@@ -308,11 +308,12 @@
     ];
 
     const MOODS = [
-      { id: 'quiet', label: '🤍 安静' }, { id: 'summer', label: '☀️ 夏日' },
-      { id: 'solitude', label: '🌿 孤独' }, { id: 'childhood', label: '🍭 童年' },
-      { id: 'seaside', label: '🌊 海边' }, { id: 'afternoon', label: '🌤️ 午后' },
-      { id: 'night', label: '🌙 夜晚' }, { id: 'memory', label: '📜 记忆' },
-      { id: 'slight-surrealism', label: '🌀 超现实' }
+      { id: 'none', label: '不选' }, { id: 'custom', label: '自定义 ✏️' },
+      { id: 'quiet', label: '安静' }, { id: 'summer', label: '夏日' },
+      { id: 'solitude', label: '孤独' }, { id: 'childhood', label: '童年' },
+      { id: 'seaside', label: '海边' }, { id: 'afternoon', label: '午后' },
+      { id: 'night', label: '夜晚' }, { id: 'memory', label: '记忆' },
+      { id: 'slight-surrealism', label: '超现实' }
     ];
 
     const TENSIONS = [
@@ -430,6 +431,7 @@
                 <div class="form-group"><label>纹理质感</label><div class="chip-grid" id="zp-texture"></div></div>
               </div>
               <div class="form-group full" style="margin-top:16px;"><label>情绪氛围</label><div class="chip-grid" id="zp-mood"></div></div>
+              <div class="form-group full" id="zp-mood-custom-wrap" style="margin-top:12px;display:none;"><input type="text" id="zpMoodCustom" placeholder="用中文或英文描述你想要的画面情绪..."></div>
             </div>`;
         },
         init: function() {
@@ -445,6 +447,14 @@
             { id: 'aged-paper-mottling', label: '仿旧纸张斑驳' }
           ], '_zpTexture', 'risograph-grain');
           buildChips('zp-mood', MOODS, '_zpMood', 'quiet');
+          document.querySelectorAll('#zp-mood .chip-option').forEach(chip => {
+            chip.addEventListener('click', function() {
+              setTimeout(() => {
+                const wrap = document.getElementById('zp-mood-custom-wrap');
+                if (wrap) wrap.style.display = window._zpMood === 'custom' ? '' : 'none';
+              }, 10);
+            });
+          });
           // Layout
           const layouts = [
             { id: 'center-fragment', label: '居中碎片' }, { id: 'lower-left-float', label: '左下浮动' },
@@ -570,7 +580,9 @@
             'seaside':'seaside atmosphere,salt air,coastal quiet','afternoon':'lazy afternoon,warm light,stillness',
             'night':'nocturnal,hushed,dim,shadowy,lunar','memory':'memory-like,archival,distant,ephemeral',
             'slight-surrealism':'slightly surreal,dream-adjacent,uncanny quiet'
-          }[mood] || 'quiet,poetic,archival';
+          }[mood] || '';
+          const customMood = mood === 'custom' ? (document.getElementById('zpMoodCustom')?.value.trim() || '') : '';
+          const moodLine = mood === 'none' ? '' : mood === 'custom' && customMood ? `The overall mood is ${customMood}. ` : moodMap ? `The overall mood is ${moodMap}: ` : '';
 
           return [
             `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. About ${emptySpace}% of the canvas is empty paper. ${layoutDesc}`,
@@ -578,7 +590,7 @@
             `${textLine}Small serif or typewriter typography, set in a sparse arrangement. ${colorMode === 'bw'
               ? 'The entire poster is black-and-white or grayscale — no chromatic color anywhere. The accent comes from pure black ink, dense charcoal, or silver gelatin tones, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size.'
               : `The single high-chroma accent is ${color}, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size.`} Print defects include ${texture.replace(/-/g, ' ')}, with subtle scan noise and paper fiber texture throughout.`,
-            `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. The overall mood is ${moodMap}: a Japanese/Korean indie zine or minimal editorial poster. No full-bleed scene, no commercial headline, no glossy mockup, no 3D, no cinematic lighting, no neon, no dense composition, no long clean text blocks.`
+            `Flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. ${moodLine}a Japanese/Korean indie zine or minimal editorial poster. No full-bleed scene, no commercial headline, no glossy mockup, no 3D, no cinematic lighting, no neon, no dense composition, no long clean text blocks.`
           ].join('\n\n');
         }
       },
@@ -625,12 +637,21 @@
                 <div class="form-group"><label>情绪氛围</label>
                   <div class="chip-grid" id="gs-mood"></div></div>
               </div>
+              <div class="form-group full" id="gs-mood-custom-wrap" style="margin-top:12px;display:none;"><input type="text" id="gsMoodCustom" placeholder="用中文或英文描述你想要的画面情绪..."></div>
             </div>`;
         },
         init: function() {
           buildColorSwatches('gs-color', '_gsColor', 'cobalt-blue');
           buildChips('gs-paper', PAPERS, '_gsPaper', 'warm-cream');
           buildChips('gs-mood', MOODS, '_gsMood', 'quiet');
+          document.querySelectorAll('#gs-mood .chip-option').forEach(chip => {
+            chip.addEventListener('click', function() {
+              setTimeout(() => {
+                const wrap = document.getElementById('gs-mood-custom-wrap');
+                if (wrap) wrap.style.display = window._gsMood === 'custom' ? '' : 'none';
+              }, 10);
+            });
+          });
           buildChips('gs-lang', [
             { id: 'en', label: 'English' }, { id: 'zh', label: '中文' },
             { id: 'bilingual', label: '中英双语' }
@@ -760,10 +781,10 @@
           const illustSource = window._gsIllustSource || 'translate';
           const illustSat = window._gsIllustSat || 50;
           const illustSatNote = illustSat < 30
-            ? `Illustration saturation: the illustrated region has boosted, vibrant saturation — colors are richer and more intense than the original photo, while the photographic region retains its natural saturation.`
+            ? 'Illustration color saturation is boosted above the original photo — richer, more vibrant, more intense colors in all illustrated areas, while the photographic region retains its natural saturation. '
             : illustSat > 70
-            ? `Illustration saturation: the illustrated region is desaturated and muted — colors are faded and washed, with a drained archival quality, while the photographic region retains its natural saturation.`
-            : `Illustration saturation: the illustrated region matches the original photo's natural saturation level — no boost or reduction, while the photographic region is unchanged.`;
+            ? 'Illustration color saturation is desaturated below the original photo — faded, washed, drained archival quality in all illustrated areas, while the photographic region retains its natural saturation. '
+            : '';
           const absMap = { low: '30-40', medium: '60-80', high: '80-95' };
           const absLabelMap = { low: 'low', medium: 'medium', high: 'high' };
           const absRemove = absMap[absLevel];
@@ -776,7 +797,9 @@
             'quiet':'quiet, contemplative','summer':'warm, nostalgic summer','solitude':'solitary, meditative',
             'childhood':'childhood, nostalgic','seaside':'seaside, coastal','afternoon':'lazy afternoon, stillness',
             'night':'nocturnal, hushed','memory':'memory-like, archival','slight-surrealism':'slightly surreal'
-          }[mood] || 'quiet';
+          }[mood] || '';
+          const customGsMood = mood === 'custom' ? (document.getElementById('gsMoodCustom')?.value.trim() || '') : '';
+          const moodDesc = mood === 'none' ? '' : mood === 'custom' && customGsMood ? `${customGsMood} ` : moodMap ? `${moodMap} ` : '';
 
           const gsLayoutMap = {
             'photo-top': 'Composition: photo-top. Photography renders the upper 42-52% of one continuous scene; paper illustration renders the lower 48-58% of that same registered scene. The horizontal torn-material boundary changes medium only. Any horizon, structure, figure, terrain, shadow, or contour crossing it must continue at the identical position, scale, direction, and perspective. The eye path descends through the uninterrupted scene.',
@@ -800,14 +823,14 @@
             : `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. Treat the supplied reference photograph as the only factual scene. Photography and paper illustration are two rendering media inside one continuous reality, never two related compositions.`;
 
           const treatmentPara = illustSource === 'extend'
-            ? `Paper illustration expansion: the illustrated region reveals the same world that continues beyond the photo frame, not a different scene. The boundary match is the first and non-negotiable requirement: every partial form touching the photo side of the boundary — horizon line, terrain contour, building edge, road, waterline, tree mass, shadow direction — must continue across the boundary at its exact position, angle, scale, depth layer, and color temperature. What touches the edge on the photo side must touch the same edge at the same point on the illustration side. Only after this exact boundary match is established may the illustration expand outward, following the logic of what is already visible at the photo edges: the same terrain type, architectural character, vegetation, atmosphere, and weather. The expansion must feel inevitable — as if the photo was simply cropped from this larger paper composition. Use ${absLabel} abstraction (removing roughly ${absRemove}% of descriptive detail) in the illustrated region, rendered in unmistakably paper-native form: flat-ink, broken-contour, sparse-halftone, or cut-paper masses. The photographic region remains visibly truthful photography with natural pixel-level texture and tonal detail. ${illustSatNote}`
-            : `Same-scene paper translation: use ${absLabel} abstraction, removing roughly ${absRemove}% of descriptive detail. Preserve the photographic regions as visibly truthful photography with natural pixel-level texture and tonal detail. Make the illustrated regions unmistakably paper-native even at thumbnail size by merging repeated texture, foliage, branches, crowds, surface detail, and realistic shading into larger flat-ink, broken-contour, sparse-halftone, or cut-paper masses. Continuity does not mean applying one uniform illustrated style to the whole image: the two media must remain clearly distinguishable while depicting exactly the same registered reality. Change only visual medium and internal detail density. Do not move, rescale, rotate, duplicate, replace, or redesign major subjects; do not create a new horizon, background, camera angle, or neighboring scene. If the poster extends beyond the source frame, continue only the immediately adjacent environment supported by visible edge evidence. ${illustSatNote}`;
+            ? `${illustSatNote}Paper illustration expansion: the illustrated region reveals the same world that continues beyond the photo frame, not a different scene. The boundary match is the first and non-negotiable requirement: every partial form touching the photo side of the boundary — horizon line, terrain contour, building edge, road, waterline, tree mass, shadow direction — must continue across the boundary at its exact position, angle, scale, depth layer, and color temperature. What touches the edge on the photo side must touch the same edge at the same point on the illustration side. Only after this exact boundary match is established may the illustration expand outward, following the logic of what is already visible at the photo edges: the same terrain type, architectural character, vegetation, atmosphere, and weather. The expansion must feel inevitable — as if the photo was simply cropped from this larger paper composition. Use ${absLabel} abstraction (removing roughly ${absRemove}% of descriptive detail) in the illustrated region, rendered in unmistakably paper-native form: flat-ink, broken-contour, sparse-halftone, or cut-paper masses. The photographic region remains visibly truthful photography with natural pixel-level texture and tonal detail.`
+            : `${illustSatNote}Same-scene paper translation: use ${absLabel} abstraction, removing roughly ${absRemove}% of descriptive detail. Preserve the photographic regions as visibly truthful photography with natural pixel-level texture and tonal detail. Make the illustrated regions unmistakably paper-native even at thumbnail size by merging repeated texture, foliage, branches, crowds, surface detail, and realistic shading into larger flat-ink, broken-contour, sparse-halftone, or cut-paper masses. Continuity does not mean applying one uniform illustrated style to the whole image: the two media must remain clearly distinguishable while depicting exactly the same registered reality. Change only visual medium and internal detail density. Do not move, rescale, rotate, duplicate, replace, or redesign major subjects; do not create a new horizon, background, camera angle, or neighboring scene. If the poster extends beyond the source frame, continue only the immediately adjacent environment supported by visible edge evidence.`;
 
           return [
             openingLine,
             `Scene registration: ${scene ? `preserve the exact scene identity and relationships described: "${scene}".` : 'preserve the supplied scene identity, natural color atmosphere, and defining spatial relationships.'} Use one camera, one viewpoint, one projection, one horizon system, and one scene coordinate system across the entire poster. Across every medium boundary, preserve each subject's identity, exact position, projected scale, contour endpoints and tangent direction, facing direction, depth order, occlusion, light direction, shadow direction, weather, and color-temperature logic. A person, building, tree, road, shoreline, bridge, reflection, cloud, or terrain form crossing a boundary must remain the same continuous thing, not a substitute, duplicate, symbol, or newly invented object.`,
             `${treatmentPara}${microText}\n\n${layoutDesc}\n\nChromatic structure: add one print hue as ${color}, occupying about 3-8% of the poster as an opaque cut-paper or flat printed form. Attach it to a real source plane, contour, path, shadow, or rhythm and let it continue through the medium boundary without changing the underlying object's identity or position. Do not create decorative color echoes by copying subjects.\n\nTorn-paper handoff: make the complete main medium boundary visibly legible at thumbnail size as an irregular hand-torn fibrous edge, with a narrow exposed-fiber fringe (1-3% of the short edge) and warm paper-tone interruption. The tear is only a material boundary, not a break in reality. Fibers may hide a very narrow strip, but matching contours must reappear on the opposite side at the correct endpoint, tangent, thickness, and depth. No digital clipping, uniform frame, or wide gap used to conceal misalignment.`,
-            `Continuity gate before output: inspect the complete boundary and correct any broken contour, shifted horizon, changed vanishing direction, scale jump, duplicated or replaced subject, reversed occlusion, inconsistent reflection, altered light or weather, unsupported out-of-frame scenery, detached inset, or independent illustrated scene. Any such failure must be fixed even if the composition is attractive. Then preserve the intended ${moodMap} character: matte absorbent paper, diffuse low-contrast scan, restrained fibers, speckles, and scan noise; active negative space; no 3D, cinematic lighting, glossy mockup, commercial headline hierarchy, neon, or dense detail. The result must read as one uninterrupted scene whose rendering medium changes across tactile paper boundaries.`
+            `Continuity gate before output: inspect the complete boundary and correct any broken contour, shifted horizon, changed vanishing direction, scale jump, duplicated or replaced subject, reversed occlusion, inconsistent reflection, altered light or weather, unsupported out-of-frame scenery, detached inset, or independent illustrated scene. Any such failure must be fixed even if the composition is attractive. Then preserve the intended ${moodDesc}character: matte absorbent paper, diffuse low-contrast scan, restrained fibers, speckles, and scan noise; active negative space; no 3D, cinematic lighting, glossy mockup, commercial headline hierarchy, neon, or dense detail. The result must read as one uninterrupted scene whose rendering medium changes across tactile paper boundaries.`
           ].join('\n\n');
         }
       },
@@ -845,12 +868,21 @@
                 <div class="form-group"><label>文字方向 <span class="hint">— 可选，出现的文字内容</span></label>
                   <input type="text" id="sdText" placeholder="留空则自动生成"></div>
               </div>
+              <div class="form-group full" id="sd-mood-custom-wrap" style="margin-top:12px;display:none;"><input type="text" id="sdMoodCustom" placeholder="用中文或英文描述你想要的画面情绪..."></div>
             </div>`;
         },
         init: function() {
           buildColorSwatches('sd-color', '_sdColor', 'ultramarine');
           buildChips('sd-paper', PAPERS, '_sdPaper', 'warm-cream');
           buildChips('sd-mood', MOODS, '_sdMood', 'solitude');
+          document.querySelectorAll('#sd-mood .chip-option').forEach(chip => {
+            chip.addEventListener('click', function() {
+              setTimeout(() => {
+                const wrap = document.getElementById('sd-mood-custom-wrap');
+                if (wrap) wrap.style.display = window._sdMood === 'custom' ? '' : 'none';
+              }, 10);
+            });
+          });
           buildTensionGrid('sd-tension', TENSIONS, '_sdTension', 'smallness-vastness');
           buildChips('sd-colorMode', [
             { id: 'standard', label: '标准强调色模式' },
@@ -882,7 +914,9 @@
             'quiet':'quiet, contemplative','summer':'warm, nostalgic','solitude':'solitary, meditative',
             'childhood':'childhood, tender','seaside':'seaside, coastal','afternoon':'still, warm',
             'night':'nocturnal, hushed','memory':'memory-like, distant','slight-surrealism':'slightly surreal'
-          }[mood] || 'quiet';
+          }[mood] || '';
+          const customSdMood = mood === 'custom' ? (document.getElementById('sdMoodCustom')?.value.trim() || '') : '';
+          const moodTemp = mood === 'none' ? '' : mood === 'custom' && customSdMood ? `The emotional temperature is ${customSdMood}: poetic, tactile, and non-commercial. ` : moodMap ? `The emotional temperature is ${moodMap}: poetic, tactile, and non-commercial. ` : 'Poetic, tactile, and non-commercial. ';
 
           const propLine = prop ? `Artistic proposition: ${prop}.` : 'Artistic proposition: capture the emotional residue that remains after factual description is removed.';
           const metaLine = meta ? `Central visual metaphor: ${meta}, derived from the source material.` : 'Derive one central visual metaphor from the source material that embodies the emotional tension.';
@@ -898,7 +932,7 @@
             `Canvas: a vertical 3:5 paper-poster on ${paper}. Full-frame flat scan, no border, no mockup. 70-85% quiet paper. One active illustration cluster occupying about 12-30% of the canvas. Asymmetric composition with figure-ground clarity, directional breathing room, and deliberate eye path: entry through the focal encounter, then movement through negative space to quiet exit.`,
             `Distilled subject: ${scene ? `semantic nucleus extracted from the described scene: "${scene}".` : 'semantic nucleus extracted from the supplied reference photograph.'} Preserve 2-4 source anchors — the core subject, dominant gesture, key spatial relationship, and emotional residue. Discard roughly 70-90% of descriptive detail. Render the illustration using editorial abstraction: simplified masses, broken contours, cut-paper forms, and sparse marks. The final image must contain original illustration, paper, and typography only. Do not reproduce, embed, or retain photographic pixels from the reference.`,
             `${colorSection}\n\nTransition edge: use natural isolated contour — clean organic silhouettes that meet the paper directly, with faint ink bite or paper grain at the contour. No torn boundary, grayscale rim, or decorative border.\n\nTypography: ${textLine} Treat text as authorial material — it may be tiny, fragmented, oversized, or materially integrated. Use it to expand, redirect, or complicate the image, not to caption what is visible.`,
-            `Reproduction: flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. Paper fibers, grain, and subtle print defects. The emotional temperature is ${moodMap}: poetic, tactile, and non-commercial. No photographic or photorealistic regions. No 3D, no cinematic lighting, no glossy mockup, no commercial hierarchy, no dense detail, no decorative motifs. The result must stand as an independent artwork without the source photograph.`
+            `Reproduction: flat orthographic scanned-paper appearance. Matte absorbent paper, diffuse light, low-to-medium contrast. Paper fibers, grain, and subtle print defects. ${moodTemp}No photographic or photorealistic regions. No 3D, no cinematic lighting, no glossy mockup, no commercial hierarchy, no dense detail, no decorative motifs. The result must stand as an independent artwork without the source photograph.`
           ].join('\n\n');
         }
       },
