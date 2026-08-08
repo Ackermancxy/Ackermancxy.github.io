@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Layout Editor — Gathered Scenes</title>
+<style>
+:root {
+  --bg: #1a1a1f;
+  --bg-panel: #222228;
+  --bg-card: #2a2a32;
+  --border: #3a3a44;
+  --text: #d4d4d8;
+  --text-muted: #888;
+  --accent: #c77d61;
+  --accent2: #8a9ba8;
+  --photo-bg: #5a7a9a;
+  --illust-bg: #c49a7a;
+  --handle: #fff;
+  --danger: #e05555;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Noto Sans SC", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Canvas area */
+.canvas-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  position: relative;
+}
+.canvas-container {
+  position: relative;
+  background: #fffef8;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
+  transition: width 0.2s, height 0.2s;
+  cursor: crosshair;
+}
+.canvas-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(180,160,140,0.15) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(200,180,160,0.08) 0%, transparent 30%, rgba(180,160,140,0.08) 70%, rgba(200,180,160,0.12) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Photo region */
+.photo-region {
+  position: absolute;
+  background: var(--photo-bg);
+  opacity: 0.7;
+  z-index: 2;
+  cursor: move;
+  border: 2px dashed rgba(255,255,255,0.15);
+  transition: none;
+}
+.photo-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
+/* Resize handles */
+.handle {
+  position: absolute;
+  width: 12px; height: 12px;
+  background: var(--handle);
+  border: 2px solid var(--bg);
+  border-radius: 2px;
+  z-index: 10;
+  pointer-events: auto;
+}
+.handle:hover { background: var(--accent); transform: scale(1.2); }
+.handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+.handle.n  { top: -6px; left: 50%; margin-left: -6px; cursor: n-resize; }
+.handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+.handle.e  { top: 50%; right: -6px; margin-top: -6px; cursor: e-resize; }
+.handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+.handle.s  { bottom: -6px; left: 50%; margin-left: -6px; cursor: s-resize; }
+.handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+.handle.w  { top: 50%; left: -6px; margin-top: -6px; cursor: w-resize; }
+
+/* Torn edge SVG */
+.torn-edge {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.torn-edge line, .torn-edge path {
+  fill: none;
+  stroke: rgba(0,0,0,0.12);
+  stroke-width: 2;
+  stroke-dasharray: 8 4 3 5 6 3;
+}
+
+/* Illustration region hint */
+.illust-hint {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  color: rgba(180,150,120,0.3);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+}
+
+/* Right panel */
+.panel {
+  width: 280px;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px;
+  gap: 14px;
+  z-index: 20;
+}
+.panel h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.panel-section {
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 12px;
+}
+.panel-section label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.panel-section .row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.panel-section input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+}
+.panel-section input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+.panel-section .val {
+  font-size: 0.7rem;
+  color: var(--text);
+  min-width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.panel input[type="number"] {
+  width: 60px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 4px 6px;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+/* Preset chips */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+.preset-chip {
+  padding: 6px 8px;
+  font-size: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  background: var(--bg);
+  transition: all 0.15s;
+}
+.preset-chip:hover { border-color: var(--accent); }
+.preset-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Buttons */
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+  width: 100%;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-secondary { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* Aspect ratio preset */
+.ratio-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.ratio-chip {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--bg);
+  font-variant-numeric: tabular-nums;
+}
+.ratio-chip:hover { border-color: var(--accent2); }
+.ratio-chip.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+/* Output */
+.output-area {
+  font-family: "SF Mono", "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  color: var(--text-muted);
+  max-height: 120px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+/* Frame indicator */
+.frame-indicator {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.frame-indicator::after {
+  content: '3 : 5  canvas';
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  font-size: 0.55rem;
+  color: rgba(0,0,0,0.15);
+  letter-spacing: 0.05em;
+}
+</style>
+</head>
+<body>
+
+<div class="canvas-wrap" id="canvasWrap">
+  <div class="canvas-container" id="canvas">
+    <div class="frame-indicator"></div>
+    <div class="photo-region" id="photoRegion">
+      <div class="photo-label">PHOTO</div>
+      <div class="handle nw" data-dir="nw"></div>
+      <div class="handle n"  data-dir="n"></div>
+      <div class="handle ne" data-dir="ne"></div>
+      <div class="handle e"  data-dir="e"></div>
+      <div class="handle se" data-dir="se"></div>
+      <div class="handle s"  data-dir="s"></div>
+      <div class="handle sw" data-dir="sw"></div>
+      <div class="handle w"  data-dir="w"></div>
+    </div>
+    <svg class="torn-edge" id="tornEdge"></svg>
+  </div>
+</div>
+
+<div class="panel" id="panel">
+  <div class="panel-section">
+    <h3>画布比例</h3>
+    <div class="ratio-chips" id="ratioChips"></div>
+  </div>
+
+  <div class="panel-section">
+    <h3>预设布局</h3>
+    <div class="preset-grid" id="presetGrid"></div>
+  </div>
+
+  <div class="panel-section">
+    <h3>照片位置 & 大小</h3>
+    <label>X 偏移</label>
+    <div class="row"><input type="range" id="photoX" min="0" max="100" value="5"><span class="val" id="photoXVal">5%</span></div>
+    <label style="margin-top:8px;">Y 偏移</label>
+    <div class="row"><input type="range" id="photoY" min="0" max="100" value="5"><span class="val" id="photoYVal">5%</span></div>
+    <label style="margin-top:8px;">宽度</label>
+    <div class="row"><input type="range" id="photoW" min="10" max="90" value="90"><span class="val" id="photoWVal">90%</span></div>
+    <label style="margin-top:8px;">高度</label>
+    <div class="row"><input type="range" id="photoH" min="10" max="90" value="45"><span class="val" id="photoHVal">45%</span></div>
+  </div>
+
+  <div class="panel-section">
+    <h3>生成输出</h3>
+    <div class="output-area" id="outputText">调整布局后点击生成...</div>
+    <button class="btn btn-primary" id="copyBtn" style="margin-top:8px;">复制布局描述</button>
+    <button class="btn btn-secondary" id="randomTornBtn" style="margin-top:4px;">随机撕边</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  // ---- State ----
+  const state = {
+    ratioW: 3, ratioH: 5,
+    px: 5, py: 5, pw: 90, ph: 45,
+    tornSeed: Date.now()
+  };
+
+  // ---- DOM refs ----
+  const canvasWrap = document.getElementById('canvasWrap');
+  const canvas = document.getElementById('canvas');
+  const photo = document.getElementById('photoRegion');
+  const tornSvg = document.getElementById('tornEdge');
+  const outputText = document.getElementById('outputText');
+  const toast = document.getElementById('toast');
+
+  // ---- Canvas sizing ----
+  function resizeCanvas() {
+    const maxH = canvasWrap.clientHeight - 64;
+    const maxW = canvasWrap.clientWidth - 64;
+    const ratio = state.ratioW / state.ratioH;
+    let w, h;
+    if (maxH * ratio <= maxW) {
+      h = maxH;
+      w = h * ratio;
+    } else {
+      w = maxW;
+      h = w / ratio;
+    }
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    updatePhoto();
+    drawTornEdge();
+  }
+
+  // ---- Slider sync ----
+  function syncSliders() {
+    document.getElementById('photoX').value = state.px;
+    document.getElementById('photoXVal').textContent = state.px + '%';
+    document.getElementById('photoY').value = state.py;
+    document.getElementById('photoYVal').textContent = state.py + '%';
+    document.getElementById('photoW').value = state.pw;
+    document.getElementById('photoWVal').textContent = state.pw + '%';
+    document.getElementById('photoH').value = state.ph;
+    document.getElementById('photoHVal').textContent = state.ph + '%';
+  }
+
+  // ---- Update photo region ----
+  function updatePhoto() {
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    photo.style.left = (state.px / 100 * cw) + 'px';
+    photo.style.top = (state.py / 100 * ch) + 'px';
+    photo.style.width = (state.pw / 100 * cw) + 'px';
+    photo.style.height = (state.ph / 100 * ch) + 'px';
+    drawTornEdge();
+    updateOutput();
+    syncSliders();
+  }
+
+  // ---- Torn edge generation ----
+  function tornPath(x1, y1, x2, y2, segments) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx*dx + dy*dy);
+    const ux = dx / len, uy = dy / len;
+    const nx = -uy, ny = ux;
+    let d = '';
+    d += `M${x1},${y1}`;
+    const segLen = len / segments;
+    const rng = mulberry32(state.tornSeed);
+    for (let i = 1; i < segments; i++) {
+      const t = i / segments;
+      const jitter = (rng() - 0.5) * segLen * 0.6;
+      const cx = x1 + dx * t + nx * jitter;
+      const cy = y1 + dy * t + ny * jitter;
+      d += ` L${cx},${cy}`;
+    }
+    d += ` L${x2},${y2}`;
+    return d;
+  }
+
+  function mulberry32(a) {
+    return function() {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function drawTornEdge() {
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    const l = state.px / 100 * cw;
+    const t = state.py / 100 * ch;
+    const w = state.pw / 100 * cw;
+    const h = state.ph / 100 * ch;
+    const r = l + w, b = t + h;
+
+    const segs = Math.max(4, Math.floor(Math.min(w, h) / 12));
+    let paths = '';
+
+    // Top edge
+    if (t > 0.5) paths += `<path d="${tornPath(l, t, r, t, segs)}" />`;
+    // Right edge
+    if (r < cw - 0.5) paths += `<path d="${tornPath(r, t, r, b, segs)}" />`;
+    // Bottom edge
+    if (b < ch - 0.5) paths += `<path d="${tornPath(r, b, l, b, segs)}" />`;
+    // Left edge
+    if (l > 0.5) paths += `<path d="${tornPath(l, b, l, t, segs)}" />`;
+
+    tornSvg.innerHTML = paths;
+  }
+
+  // ---- Output generation ----
+  function updateOutput() {
+    const desc = describeLayout();
+    outputText.textContent = desc;
+  }
+
+  function describeLayout() {
+    const { px, py, pw, ph } = state;
+    const cx = px + pw / 2, cy = py + ph / 2;
+
+    // Determine the dominant layout type
+    let type = 'custom';
+    if (ph >= 40 && ph <= 58 && py < 8 && pw > 80) type = 'photo-top (实上虚下)';
+    else if (ph >= 40 && ph <= 58 && py > 40 && pw > 80) type = 'photo-bottom (虚上实下)';
+    else if (pw >= 35 && pw <= 55 && px < 8 && ph > 80) type = 'photo-left (实左虚右)';
+    else if (pw >= 35 && pw <= 55 && px > 40 && ph > 80) type = 'photo-right (虚左实右)';
+    else if (pw >= 20 && pw <= 40 && ph >= 25 && ph <= 45 && cx > 35 && cx < 65 && cy > 30 && cy < 70) type = 'photo-inset (实嵌虚中)';
+    else if (pw >= 50 && pw <= 70 && ph >= 50 && ph <= 70 && cx > 30 && cx < 70 && cy > 25 && cy < 75) type = 'illustration-inset (虚嵌实中)';
+
+    const lines = [
+      `Layout type: ${type}`,
+      `Photo region: x=${px}%, y=${py}%, w=${pw}%, h=${ph}%`,
+      `Illustration region: the remaining canvas area surrounding the photo`,
+      ``,
+      `Composition: custom user-defined layout. Photography occupies a ${pw}%×${ph}% region at position (${px}%, ${py}%). Paper illustration renders the rest of the same continuous scene. The torn-material boundary follows the photo edges, changing medium only. Every horizon, structure, figure, terrain, shadow, or contour crossing the boundary must continue at identical position, scale, direction, and perspective.`
+    ];
+    return lines.join('\n');
+  }
+
+  // ---- Drag & Resize ----
+  let dragMode = null; // 'move' | 'resize'
+  let dragDir = null;
+  let dragStart = { x: 0, y: 0, px: 0, py: 0, pw: 0, ph: 0 };
+
+  function pctX(px) { return px / canvas.clientWidth * 100; }
+  function pctY(py) { return py / canvas.clientHeight * 100; }
+
+  photo.addEventListener('mousedown', function(e) {
+    if (e.target.classList.contains('handle')) return;
+    e.preventDefault();
+    dragMode = 'move';
+    dragStart = { x: e.clientX, y: e.clientY, px: state.px, py: state.py };
+    document.body.style.cursor = 'move';
+  });
+
+  document.querySelectorAll('.handle').forEach(h => {
+    h.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragMode = 'resize';
+      dragDir = this.dataset.dir;
+      dragStart = { x: e.clientX, y: e.clientY, px: state.px, py: state.py, pw: state.pw, ph: state.ph };
+    });
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!dragMode) return;
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    const dxPct = (e.clientX - dragStart.x) / cw * 100;
+    const dyPct = (e.clientY - dragStart.y) / ch * 100;
+
+    if (dragMode === 'move') {
+      state.px = Math.max(0, Math.min(100 - state.pw, dragStart.px + dxPct));
+      state.py = Math.max(0, Math.min(100 - state.ph, dragStart.py + dyPct));
+    } else if (dragMode === 'resize') {
+      const d = dragDir;
+      let { px, py, pw, ph } = dragStart;
+
+      if (d.includes('e')) {
+        pw = Math.max(10, Math.min(100 - px, dragStart.pw + dxPct));
+        state.pw = Math.round(pw);
+      }
+      if (d.includes('w')) {
+        const newPx = Math.max(0, Math.min(dragStart.px + dragStart.pw - 10, dragStart.px + dxPct));
+        state.px = Math.round(newPx);
+        state.pw = Math.round(dragStart.px + dragStart.pw - state.px);
+      }
+      if (d.includes('s')) {
+        ph = Math.max(10, Math.min(100 - py, dragStart.ph + dyPct));
+        state.ph = Math.round(ph);
+      }
+      if (d.includes('n')) {
+        const newPy = Math.max(0, Math.min(dragStart.py + dragStart.ph - 10, dragStart.py + dyPct));
+        state.py = Math.round(newPy);
+        state.ph = Math.round(dragStart.py + dragStart.ph - state.py);
+      }
+    }
+
+    // Clamp
+    state.px = Math.max(0, Math.min(95, Math.round(state.px)));
+    state.py = Math.max(0, Math.min(95, Math.round(state.py)));
+    state.pw = Math.max(10, Math.min(90, Math.round(state.pw)));
+    state.ph = Math.max(10, Math.min(90, Math.round(state.ph)));
+    if (state.px + state.pw > 100) state.pw = 100 - state.px;
+    if (state.py + state.ph > 100) state.ph = 100 - state.py;
+
+    updatePhoto();
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (!dragMode) return;
+    dragMode = null;
+    dragDir = null;
+    document.body.style.cursor = '';
+    state.tornSeed = Date.now();
+    drawTornEdge();
+  });
+
+  // Touch support
+  photo.addEventListener('touchstart', function(e) {
+    if (e.target.classList.contains('handle')) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    dragMode = 'move';
+    dragStart = { x: t.clientX, y: t.clientY, px: state.px, py: state.py };
+  }, { passive: false });
+
+  document.querySelectorAll('.handle').forEach(h => {
+    h.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const t = e.touches[0];
+      dragMode = 'resize';
+      dragDir = this.dataset.dir;
+      dragStart = { x: t.clientX, y: t.clientY, px: state.px, py: state.py, pw: state.pw, ph: state.ph };
+    }, { passive: false });
+  });
+
+  document.addEventListener('touchmove', function(e) {
+    if (!dragMode) return;
+    const t = e.touches[0];
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    const dxPct = (t.clientX - dragStart.x) / cw * 100;
+    const dyPct = (t.clientY - dragStart.y) / ch * 100;
+
+    if (dragMode === 'move') {
+      state.px = Math.max(0, Math.min(100 - state.pw, dragStart.px + dxPct));
+      state.py = Math.max(0, Math.min(100 - state.ph, dragStart.py + dyPct));
+    } else if (dragMode === 'resize') {
+      const d = dragDir;
+      if (d.includes('e')) state.pw = Math.round(Math.max(10, Math.min(100 - state.px, dragStart.pw + dxPct)));
+      if (d.includes('w')) {
+        const newPx = Math.max(0, Math.min(dragStart.px + dragStart.pw - 10, dragStart.px + dxPct));
+        state.px = Math.round(newPx);
+        state.pw = Math.round(dragStart.px + dragStart.pw - state.px);
+      }
+      if (d.includes('s')) state.ph = Math.round(Math.max(10, Math.min(100 - state.py, dragStart.ph + dyPct)));
+      if (d.includes('n')) {
+        const newPy = Math.max(0, Math.min(dragStart.py + dragStart.ph - 10, dragStart.py + dyPct));
+        state.py = Math.round(newPy);
+        state.ph = Math.round(dragStart.py + dragStart.ph - state.py);
+      }
+    }
+    state.px = Math.max(0, Math.min(95, Math.round(state.px)));
+    state.py = Math.max(0, Math.min(95, Math.round(state.py)));
+    state.pw = Math.max(10, Math.min(90, Math.round(state.pw)));
+    state.ph = Math.max(10, Math.min(90, Math.round(state.ph)));
+    updatePhoto();
+  }, { passive: false });
+
+  document.addEventListener('touchend', function() {
+    if (!dragMode) return;
+    dragMode = null;
+    dragDir = null;
+    state.tornSeed = Date.now();
+    drawTornEdge();
+  });
+
+  // ---- Slider inputs ----
+  ['photoX', 'photoY', 'photoW', 'photoH'].forEach(id => {
+    const slider = document.getElementById(id);
+    slider.addEventListener('input', function() {
+      const key = id === 'photoX' ? 'px' : id === 'photoY' ? 'py' : id === 'photoW' ? 'pw' : 'ph';
+      state[key] = parseInt(this.value);
+      // Clamp position
+      if (key === 'px' && state.px + state.pw > 100) state.pw = 100 - state.px;
+      if (key === 'py' && state.py + state.ph > 100) state.ph = 100 - state.py;
+      updatePhoto();
+    });
+  });
+
+  // ---- Ratio chips ----
+  const ratios = [
+    { w: 3, h: 5, label: '3:5' },
+    { w: 2, h: 3, label: '2:3' },
+    { w: 1, h: 1, label: '1:1' },
+    { w: 4, h: 5, label: '4:5' },
+    { w: 9, h: 16, label: '9:16' },
+  ];
+  const ratioContainer = document.getElementById('ratioChips');
+  ratios.forEach(r => {
+    const el = document.createElement('span');
+    el.className = 'ratio-chip' + (r.w === 3 && r.h === 5 ? ' active' : '');
+    el.textContent = r.label;
+    el.addEventListener('click', () => {
+      state.ratioW = r.w;
+      state.ratioH = r.h;
+      ratioContainer.querySelectorAll('.ratio-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      resizeCanvas();
+    });
+    ratioContainer.appendChild(el);
+  });
+
+  // ---- Preset chips ----
+  const presets = [
+    { id: 'photo-top', label: '实上虚下', px: 5, py: 5, pw: 90, ph: 45 },
+    { id: 'photo-bottom', label: '虚上实下', px: 5, py: 50, pw: 90, ph: 45 },
+    { id: 'photo-left', label: '实左虚右', px: 5, py: 5, pw: 43, ph: 90 },
+    { id: 'photo-right', label: '虚左实右', px: 52, py: 5, pw: 43, ph: 90 },
+    { id: 'photo-inset', label: '实嵌虚中', px: 28, py: 30, pw: 44, ph: 40 },
+    { id: 'illust-inset', label: '虚嵌实中', px: 28, py: 30, pw: 44, ph: 40 },
+    { id: 'photo-bg', label: '实为背景', px: 5, py: 5, pw: 90, ph: 90 },
+    { id: 'illust-bg', label: '虚为背景', px: 20, py: 20, pw: 60, ph: 60 },
+  ];
+  const presetGrid = document.getElementById('presetGrid');
+  presets.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'preset-chip';
+    el.textContent = p.label;
+    el.addEventListener('click', () => {
+      state.px = p.px; state.py = p.py; state.pw = p.pw; state.ph = p.ph;
+      presetGrid.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      state.tornSeed = Date.now();
+      updatePhoto();
+    });
+    presetGrid.appendChild(el);
+  });
+
+  // ---- Buttons ----
+  document.getElementById('copyBtn').addEventListener('click', function() {
+    const text = outputText.textContent;
+    navigator.clipboard.writeText(text).then(() => showToast('布局描述已复制'));
+  });
+
+  document.getElementById('randomTornBtn').addEventListener('click', function() {
+    state.tornSeed = Date.now();
+    drawTornEdge();
+    showToast('撕边已随机更新');
+  });
+
+  // ---- Toast ----
+  let toastTimer;
+  function showToast(msg) {
+    clearTimeout(toastTimer);
+    toast.textContent = msg;
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  // ---- Window resize ----
+  window.addEventListener('resize', resizeCanvas);
+
+  // ---- Init ----
+  function init() {
+    resizeCanvas();
+    syncSliders();
+    updateOutput();
+    // Select first preset visually
+    presetGrid.querySelector('.preset-chip').classList.add('active');
+  }
+  init();
+
+})();
+</script>
+
+</body>
+</html>
