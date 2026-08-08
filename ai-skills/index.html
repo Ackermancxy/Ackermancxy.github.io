@@ -170,6 +170,11 @@
       pointer-events: none; z-index: 9999;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: var(--border); outline: none; margin: 8px 0; }
+    .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent-1); cursor: pointer; border: 2px solid var(--bg-card); transition: transform 0.2s; }
+    .slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent-1); cursor: pointer; border: 2px solid var(--bg-card); }
   </style>
 </head>
 <body>
@@ -401,6 +406,11 @@
             </div>
             <div><div class="form-section-label">布局</div>
               <div class="form-group"><label>布局风格</label><div class="layout-grid" id="zp-layout"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>留白占比 <span class="hint">— 画面中空纸的比例</span></label>
+                <input type="range" id="zp-emptySpace" min="40" max="95" value="80" class="slider">
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+                  <span>紧凑 40%</span><span id="zp-emptySpace-val">80%</span><span>极简 95%</span>
+                </div></div>
             </div>
             <div><div class="form-section-label">风格</div>
               <div class="form-row"><div class="form-group"><label>图像锚点</label><div class="anchor-grid" id="zp-anchor"></div></div>
@@ -478,8 +488,17 @@
             });
             ac.appendChild(el);
           });
+          // Slider: empty space
+          const esSlider = document.getElementById('zp-emptySpace');
+          const esVal = document.getElementById('zp-emptySpace-val');
+          if (esSlider) {
+            esSlider.addEventListener('input', () => {
+              window._zpEmptySpace = parseInt(esSlider.value);
+              if (esVal) esVal.textContent = esSlider.value + '%';
+            });
+          }
           window._zpColor = 'orange'; window._zpPaper = 'warm-cream'; window._zpColorMode = 'color';
-          window._zpLayout = 'dual-panel'; window._zpAnchor = 'flat-silhouette';
+          window._zpLayout = 'dual-panel'; window._zpAnchor = 'flat-silhouette'; window._zpEmptySpace = 80;
           window._zpTexture = 'risograph-grain'; window._zpMood = 'quiet';
         },
         generate: function() {
@@ -488,6 +507,7 @@
           const color = COLOR_MAP[window._zpColor || 'orange'];
           const paper = PAPER_MAP[window._zpPaper || 'warm-cream'];
           const colorMode = window._zpColorMode || 'color';
+          const emptySpace = window._zpEmptySpace || 80;
           const layout = window._zpLayout || 'dual-panel';
           const anchor = window._zpAnchor || 'flat-silhouette';
           const texture = window._zpTexture || 'risograph-grain';
@@ -525,7 +545,7 @@
           }[mood] || 'quiet,poetic,archival';
 
           return [
-            `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. 70% to 90% of the canvas is empty paper. ${layoutDesc}`,
+            `A tall vertical 3:5 phone-poster format on ${paper}. Full-frame aged paper surface, no border, no mockup. About ${emptySpace}% of the canvas is empty paper. ${layoutDesc}`,
             `The image anchor is ${anchorDesc}. The anchor treatment uses low-contrast photocopy softness, with subtle ink bleed and a slightly misregistered feel that makes it belong to the paper.`,
             `${textLine}Small serif or typewriter typography, set in a sparse arrangement. ${colorMode === 'bw'
               ? 'The entire poster is black-and-white or grayscale — no chromatic color anywhere. The accent comes from pure black ink, dense charcoal, or silver gelatin tones, occupying about 1.5% of the canvas or 20% of the visual cluster — clearly visible at thumbnail size.'
