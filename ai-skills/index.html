@@ -598,8 +598,12 @@
               </div>
             </div>
             <div><div class="form-section-label">构图</div>
-              <div class="form-group full"><label>实虚布局 <span class="hint">— 同一场景内摄影与插画的媒介分配</span></label>
+              <div class="form-group full"><label>布局方式 <span class="hint">— 选择预设方案或自行描述</span></label>
+                <div class="chip-grid" id="gs-layout-mode"></div></div>
+              <div class="form-group full" id="gs-layout-preset-wrap" style="margin-top:16px;"><label>实虚布局 <span class="hint">— 同一场景内摄影与插画的媒介分配</span></label>
                 <div class="layout-grid" id="gs-layout"></div></div>
+              <div class="form-group full" id="gs-layout-custom-wrap" style="margin-top:16px;display:none;"><label>自定义布局 <span class="hint">— 用中文描述你想要的实景与虚拟插画的布局方式</span></label>
+                <textarea id="gsLayoutCustom" placeholder="例如：照片放在左上角占三分之一，右下角是手绘插画延伸，中间用不规则的撕纸边缘过渡..."></textarea></div>
             </div>
             <div><div class="form-section-label">色彩</div>
               <div class="form-group"><label>强调色 <span class="hint">— 结构性的单一色彩</span></label>
@@ -629,7 +633,25 @@
             { id: 'medium', label: '中 — 适度的简化' },
             { id: 'high', label: '高 — 大幅抽象化' }
           ], '_gsAbstraction', 'medium');
-          // Typography layout builder
+          // Layout mode toggle
+          buildChips('gs-layout-mode', [
+            { id: 'preset', label: '预设布局' },
+            { id: 'custom', label: '自定义描述' }
+          ], '_gsLayoutMode', 'preset');
+          function toggleLayoutMode(mode) {
+            const presetWrap = document.getElementById('gs-layout-preset-wrap');
+            const customWrap = document.getElementById('gs-layout-custom-wrap');
+            if (!presetWrap || !customWrap) return;
+            presetWrap.style.display = mode === 'custom' ? 'none' : '';
+            customWrap.style.display = mode === 'custom' ? '' : 'none';
+          }
+          toggleLayoutMode('preset');
+          document.querySelectorAll('#gs-layout-mode .chip-option').forEach(chip => {
+            chip.addEventListener('click', function() {
+              setTimeout(() => toggleLayoutMode(window._gsLayoutMode), 10);
+            });
+          });
+          // Layout grid builder
           const gsLayouts = [
             { id: 'photo-top', label: '实上虚下' },
             { id: 'photo-bottom', label: '虚上实下' },
@@ -697,7 +719,7 @@
           });
 
           window._gsColor = 'cobalt-blue'; window._gsPaper = 'warm-cream';
-          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top';
+          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top'; window._gsLayoutMode = 'preset';
         },
         generate: function() {
           const scene = document.getElementById('gsScene').value.trim();
@@ -708,6 +730,8 @@
           const lang = window._gsLang || 'en';
           const absLevel = window._gsAbstraction || 'medium';
           const gsLayout = window._gsLayout || 'photo-top';
+          const layoutMode = window._gsLayoutMode || 'preset';
+          const customLayout = document.getElementById('gsLayoutCustom')?.value.trim() || '';
 
           const absMap = { low: '30-40', medium: '60-80', high: '80-95' };
           const absLabelMap = { low: 'low', medium: 'medium', high: 'high' };
@@ -734,7 +758,9 @@
             'photo-bg': 'Composition: photo-bg. Photography remains visible across the full registered scene. Convert selected source regions in place into paper illustration across about 30-45% of the frame, attaching every illustrated mark to the exact object, plane, shadow, path, or contour it transforms. Do not add hovering decoration, duplicate subjects, or a second scene.',
             'illustration-bg': 'Composition: illustration-bg. Paper illustration is the dominant medium across the full registered scene. Preserve photography in selected source regions covering about 30-45% of the frame, exactly where those regions belong in the complete scene. Their boundaries reveal the same objects and geometry in another medium; they are never detached photographs or separate compositions.'
           };
-          const layoutDesc = gsLayoutMap[gsLayout] || gsLayoutMap['photo-top'];
+          const layoutDesc = layoutMode === 'custom' && customLayout
+            ? `Composition: user-specified layout. ${customLayout} Follow the same scene-registration rules: one continuous scene, single viewpoint, matched contours across all medium boundaries with hand-torn fibrous edges.`
+            : (gsLayoutMap[gsLayout] || gsLayoutMap['photo-top']);
 
           return [
             `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. Treat the supplied reference photograph as the only factual scene. Photography and paper illustration are two rendering media inside one continuous reality, never two related compositions.`,
