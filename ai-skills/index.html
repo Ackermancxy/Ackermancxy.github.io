@@ -275,6 +275,14 @@
         tags: ['摄影保留', '抽象面板', '编辑风格', '极简'],
         img: 'abstract-editorial-1.jpg',
         banner: 'abstract-editorial-card.jpg'
+      },
+      {
+        id: 'photo-zine-postcard',
+        title: 'Photo to Zine Postcard',
+        desc: '将一张照片转换成一套极简、留白充足的 Zine 风格明信片正反面。上方完整嵌入原图，下方生成手绘主元素、极简元数据和取自原图的色块，背面统一可书写。',
+        tags: ['明信片', 'ZINE 风格', '手绘二创', '正反面'],
+        img: 'turquoise-lake.png',
+        banner: 'forest-homestead.png'
       }
     ];
 
@@ -1053,6 +1061,148 @@
             lines.push(noTextLine);
           }
           return lines.join('\n\n');
+        }
+      },
+
+      'photo-zine-postcard': {
+        state: { paper: 'warm-cream', motifStyle: 'hand-drawn', medium: 'watercolor', palette: 'from-photo', detail: 'high', supporting: 'none' },
+        html: function() {
+          return `
+            <div><div class="form-section-label">照片</div>
+              <div class="form-group full"><label>场景描述 <span class="hint">— 可选，描述照片内容</span></label>
+                <textarea id="zpScene" placeholder="可选。描述照片中的主体、空间关系、光线和情绪"></textarea></div>
+              <div class="form-row" style="margin-top:16px;">
+                <div class="form-group"><label>标题 <span class="hint">— 可选，留空自动生成</span></label>
+                  <input type="text" id="zpTitle" placeholder="留空则自动生成"></div>
+                <div class="form-group"><label>地点 / 日期 <span class="hint">— 可选</span></label>
+                  <input type="text" id="zpLocation" placeholder="例如：Turquoise Lake, 2026"></div>
+              </div>
+            </div>
+            <div><div class="form-section-label">构图</div>
+              <div class="form-row">
+                <div class="form-group"><label>主元素风格</label>
+                  <div class="chip-grid" id="zp-motifStyle"></div></div>
+                <div class="form-group"><label>辅助元素</label>
+                  <div class="chip-grid" id="zp-supporting"></div></div>
+              </div>
+            </div>
+            <div><div class="form-section-label">色彩</div>
+              <div class="form-group"><label>纸张色调</label>
+                <div class="chip-grid" id="zp-paper"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>色板倾向</label>
+                <div class="chip-grid" id="zp-palette"></div></div>
+            </div>
+            <div><div class="form-section-label">风格</div>
+              <div class="form-row">
+                <div class="form-group"><label>手绘媒介</label>
+                  <div class="chip-grid" id="zp-medium"></div></div>
+                <div class="form-group"><label>细节质量</label>
+                  <div class="chip-grid" id="zp-detail"></div></div>
+              </div>
+            </div>`;
+        },
+        init: function() {
+          buildChips('zp-motifStyle', [
+            { id: 'hand-drawn', label: '手绘优先' },
+            { id: 'crop', label: '精确裁切' }
+          ], '_zpMotifStyle', 'hand-drawn');
+          buildChips('zp-supporting', [
+            { id: 'none', label: '无' },
+            { id: 'small', label: '小型辅助元素' }
+          ], '_zpSupporting', 'none');
+          buildChips('zp-paper', PAPERS, '_zpPaper', 'warm-cream');
+          buildChips('zp-palette', [
+            { id: 'from-photo', label: '从照片提取' },
+            { id: 'warm', label: '暖调' },
+            { id: 'cool', label: '冷调' },
+            { id: 'neutral', label: '中性' }
+          ], '_zpPalette', 'from-photo');
+          buildChips('zp-medium', [
+            { id: 'watercolor', label: '水彩' },
+            { id: 'gouache', label: '水粉' },
+            { id: 'ink', label: '墨水' },
+            { id: 'pencil', label: '铅笔' },
+            { id: 'cut-paper', label: '拼贴' }
+          ], '_zpMedium', 'watercolor');
+          buildChips('zp-detail', [
+            { id: 'standard', label: '标准' },
+            { id: 'high', label: '高细节' }
+          ], '_zpDetail', 'high');
+
+          window._zpMotifStyle = 'hand-drawn'; window._zpSupporting = 'none';
+          window._zpPaper = 'warm-cream'; window._zpPalette = 'from-photo';
+          window._zpMedium = 'watercolor'; window._zpDetail = 'high';
+        },
+        generate: function() {
+          const scene = document.getElementById('zpScene').value.trim();
+          const title = document.getElementById('zpTitle').value.trim();
+          const location = document.getElementById('zpLocation').value.trim();
+          const motifStyle = window._zpMotifStyle || 'hand-drawn';
+          const supporting = window._zpSupporting || 'none';
+          const paper = PAPER_MAP[window._zpPaper || 'warm-cream'];
+          const palette = window._zpPalette || 'from-photo';
+          const medium = window._zpMedium || 'watercolor';
+          const detail = window._zpDetail || 'high';
+
+          const paletteMap = {
+            'from-photo': 'colors extracted from the source photograph, lowered in saturation and reduced in number',
+            'warm': 'a warm-toned palette with restrained ochre, terracotta, and muted amber',
+            'cool': 'a cool-toned palette with restrained slate blue, sage, and muted gray',
+            'neutral': 'a restrained neutral palette of warm grays, charcoal, and ivory'
+          };
+
+          const mediumMap = {
+            'watercolor': 'soft restrained watercolor',
+            'gouache': 'opaque matte gouache',
+            'ink': 'fine ink linework with light wash',
+            'pencil': 'soft graphite pencil shading',
+            'cut-paper': 'cut-paper collage with subtle shadow'
+          };
+
+          const detailLine = detail === 'high'
+            ? 'Highest detail quality, sharp and clear rendering, crisp edges, refined hand-drawn texture, low noise, no blur, suitable for later 4× super-resolution upscaling.'
+            : 'Clean rendering with balanced detail, suitable for web display.';
+
+          const motifLine = motifStyle === 'hand-drawn'
+            ? `Render the main motif as a restrained hand-drawn editorial illustration using ${mediumMap[medium] || mediumMap.watercolor}. Preserve the original silhouette, major internal structure, identity, and source color character. Keep it clean, sharp, and clearly derived from the source photo.`
+            : 'Use a clean source crop as the main motif, lightly softened and integrated with the paper.';
+
+          const supportingLine = supporting === 'small'
+            ? 'Include one optional small supporting motif near the main motif, sized 20-35% of the main motif, in a matching hand-drawn style.'
+            : 'No supporting motif.';
+
+          const titleLine = title
+            ? `Use the exact title: "${title}"`
+            : 'Create one original short title grounded in the visual facts of the photo';
+
+          const locationLine = location
+            ? `LOCATION: ${location}`
+            : '';
+
+          const sceneLine = scene
+            ? `The photo depicts: "${scene}".`
+            : 'The uploaded photo is the sole content source.';
+
+          return [
+            `Create a minimal portrait postcard front using the fixed V3 Lite structure. Portrait 2:3 ratio, reference print size 100 × 150 mm.`,
+            `Use the actual source photo in the upper area. Preserve its exact original aspect ratio. Do not repaint, replace, stretch, or crop it. Center it horizontally, keep generous margins, add a very thin frame, and leave a small even paper gap between the photo and frame. Keep a large blank transition area below the photo.`,
+            `Background: ${paper} with subtle grain. No border, no mockup.`,
+            `In the lower area, use: one compact metadata block on the lower left, one large source-specific main motif on the lower right, ${supporting === 'small' ? 'one much smaller supporting motif near it,' : ''} exactly three small color swatches sampled from the source photo.`,
+            `Select the main motif based on visual attractiveness and source identity, not ease of extraction. Prefer the most distinctive color-rich and elegant feature in the image. When the source contains a dominant color feature, choose that feature as the main motif.`,
+            motifLine,
+            `Main motif size: 28% to 38% of the card width. Placed lower right or lower center-right.`,
+            supportingLine,
+            `Use exactly three tiny source-derived color swatches: dominant color, dark structural color, and pale neutral or accent color. Palette: ${paletteMap[palette] || paletteMap['from-photo']}.`,
+            `Metadata: ${titleLine}. ${locationLine}${locationLine ? '' : ' Leave location and date blank if not provided.'} Add a small index number.`,
+            `Do not add keyword lists, sample boxes, rows of cutouts, image cards, generic circles, large color blocks, wave doodles, badges, seals, logos, or long text.`,
+            `Quality: ${detailLine}`,
+            `Overall mood: minimal, airy, refined, source-specific, lightly hand-crafted, and collectible.`,
+            '',
+            `---`,
+            '',
+            `Then create a matching unified postcard back using the same portrait 2:3 ratio, paper tone, thin-line style, and restrained visual language as the front. Keep it functional and mostly blank. Include: thin outer border, one vertical divider slightly right of center, stamp box in the upper-right, 3 or 4 address lines on the right, large blank message area on the left. Optionally add small POST CARD text near the upper-left and tiny metadata or index near the lower-left. Do not add a large collage, palette, sample blocks, or decoration that reduces writing space.`,
+            `Quality: clean sharp lines, refined paper texture, low noise, no blur, suitable for later 4× super-resolution upscaling.`
+          ].join('\n\n');
         }
       }
     };
