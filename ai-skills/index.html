@@ -390,7 +390,7 @@
           return `
             <div><div class="form-section-label">内容</div>
               <div class="form-group full"><label>主题 / 主体 <span class="hint">— 海报的核心内容</span></label>
-                <input type="text" id="fSubject" placeholder="例如：雨天的旧书店、海边黄昏、一只旧皮箱..." required></div>
+                <input type="text" id="fSubject" placeholder="例如：雨天的旧书店、海边黄昏、一只旧皮箱..."></div>
               <div class="form-group full" style="margin-top:16px;"><label>海报文字 <span class="hint">— 可选</span></label>
                 <input type="text" id="fText" placeholder="留空则自动生成"></div>
             </div>
@@ -484,7 +484,6 @@
         },
         generate: function() {
           const subject = document.getElementById('fSubject').value.trim();
-          if (!subject) return null;
           const text = document.getElementById('fText').value.trim();
           const color = COLOR_MAP[window._zpColor || 'orange'];
           const paper = PAPER_MAP[window._zpPaper || 'warm-cream'];
