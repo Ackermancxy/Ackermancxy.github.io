@@ -610,6 +610,11 @@
             <div><div class="form-section-label">色彩</div>
               <div class="form-group"><label>强调色 <span class="hint">— 结构性的单一色彩</span></label>
                 <div class="color-swatches" id="gs-color"></div></div>
+              <div class="form-group" style="margin-top:16px;"><label>插画饱和度 <span class="hint">— 仅影响插画区域，左高饱 · 中原片 · 右低饱</span></label>
+                <input type="range" id="gs-illust-sat" min="0" max="100" value="50" class="slider">
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:4px;">
+                  <span>高饱</span><span id="gs-illust-sat-val">原片</span><span>低饱</span>
+                </div></div>
               <div class="form-group" style="margin-top:16px;"><label>纸张色调</label>
                 <div class="chip-grid" id="gs-paper"></div></div>
             </div>
@@ -725,8 +730,21 @@
             lc.appendChild(el);
           });
 
+          // Slider: illustration saturation
+          const illustSatSlider = document.getElementById('gs-illust-sat');
+          const illustSatVal = document.getElementById('gs-illust-sat-val');
+          if (illustSatSlider) {
+            illustSatSlider.addEventListener('input', () => {
+              window._gsIllustSat = parseInt(illustSatSlider.value);
+              if (illustSatVal) {
+                const v = parseInt(illustSatSlider.value);
+                illustSatVal.textContent = v < 30 ? '高饱' : v > 70 ? '低饱' : '原片';
+              }
+            });
+          }
+
           window._gsColor = 'cobalt-blue'; window._gsPaper = 'warm-cream';
-          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top'; window._gsLayoutMode = 'preset'; window._gsIllustSource = 'translate';
+          window._gsMood = 'quiet'; window._gsLang = 'en'; window._gsAbstraction = 'medium'; window._gsLayout = 'photo-top'; window._gsLayoutMode = 'preset'; window._gsIllustSource = 'translate'; window._gsIllustSat = 50;
         },
         generate: function() {
           const scene = document.getElementById('gsScene').value.trim();
@@ -740,6 +758,12 @@
           const layoutMode = window._gsLayoutMode || 'preset';
           const customLayout = document.getElementById('gsLayoutCustom')?.value.trim() || '';
           const illustSource = window._gsIllustSource || 'translate';
+          const illustSat = window._gsIllustSat || 50;
+          const illustSatNote = illustSat < 30
+            ? `Illustration saturation: the illustrated region has boosted, vibrant saturation — colors are richer and more intense than the original photo, while the photographic region retains its natural saturation.`
+            : illustSat > 70
+            ? `Illustration saturation: the illustrated region is desaturated and muted — colors are faded and washed, with a drained archival quality, while the photographic region retains its natural saturation.`
+            : `Illustration saturation: the illustrated region matches the original photo's natural saturation level — no boost or reduction, while the photographic region is unchanged.`;
           const absMap = { low: '30-40', medium: '60-80', high: '80-95' };
           const absLabelMap = { low: 'low', medium: 'medium', high: 'high' };
           const absRemove = absMap[absLevel];
@@ -776,8 +800,8 @@
             : `A vertical 3:5 paper-poster canvas on ${paper}. Full-frame flat scan, no border, no mockup. Treat the supplied reference photograph as the only factual scene. Photography and paper illustration are two rendering media inside one continuous reality, never two related compositions.`;
 
           const treatmentPara = illustSource === 'extend'
-            ? `Paper illustration expansion: the illustrated region reveals the same world that continues beyond the photo frame, not a different scene. The boundary match is the first and non-negotiable requirement: every partial form touching the photo side of the boundary — horizon line, terrain contour, building edge, road, waterline, tree mass, shadow direction — must continue across the boundary at its exact position, angle, scale, depth layer, and color temperature. What touches the edge on the photo side must touch the same edge at the same point on the illustration side. Only after this exact boundary match is established may the illustration expand outward, following the logic of what is already visible at the photo edges: the same terrain type, architectural character, vegetation, atmosphere, and weather. The expansion must feel inevitable — as if the photo was simply cropped from this larger paper composition. Use ${absLabel} abstraction (removing roughly ${absRemove}% of descriptive detail) in the illustrated region, rendered in unmistakably paper-native form: flat-ink, broken-contour, sparse-halftone, or cut-paper masses. The photographic region remains visibly truthful photography with natural pixel-level texture and tonal detail.`
-            : `Same-scene paper translation: use ${absLabel} abstraction, removing roughly ${absRemove}% of descriptive detail. Preserve the photographic regions as visibly truthful photography with natural pixel-level texture and tonal detail. Make the illustrated regions unmistakably paper-native even at thumbnail size by merging repeated texture, foliage, branches, crowds, surface detail, and realistic shading into larger flat-ink, broken-contour, sparse-halftone, or cut-paper masses. Continuity does not mean applying one uniform illustrated style to the whole image: the two media must remain clearly distinguishable while depicting exactly the same registered reality. Change only visual medium and internal detail density. Do not move, rescale, rotate, duplicate, replace, or redesign major subjects; do not create a new horizon, background, camera angle, or neighboring scene. If the poster extends beyond the source frame, continue only the immediately adjacent environment supported by visible edge evidence.`;
+            ? `Paper illustration expansion: the illustrated region reveals the same world that continues beyond the photo frame, not a different scene. The boundary match is the first and non-negotiable requirement: every partial form touching the photo side of the boundary — horizon line, terrain contour, building edge, road, waterline, tree mass, shadow direction — must continue across the boundary at its exact position, angle, scale, depth layer, and color temperature. What touches the edge on the photo side must touch the same edge at the same point on the illustration side. Only after this exact boundary match is established may the illustration expand outward, following the logic of what is already visible at the photo edges: the same terrain type, architectural character, vegetation, atmosphere, and weather. The expansion must feel inevitable — as if the photo was simply cropped from this larger paper composition. Use ${absLabel} abstraction (removing roughly ${absRemove}% of descriptive detail) in the illustrated region, rendered in unmistakably paper-native form: flat-ink, broken-contour, sparse-halftone, or cut-paper masses. The photographic region remains visibly truthful photography with natural pixel-level texture and tonal detail. ${illustSatNote}`
+            : `Same-scene paper translation: use ${absLabel} abstraction, removing roughly ${absRemove}% of descriptive detail. Preserve the photographic regions as visibly truthful photography with natural pixel-level texture and tonal detail. Make the illustrated regions unmistakably paper-native even at thumbnail size by merging repeated texture, foliage, branches, crowds, surface detail, and realistic shading into larger flat-ink, broken-contour, sparse-halftone, or cut-paper masses. Continuity does not mean applying one uniform illustrated style to the whole image: the two media must remain clearly distinguishable while depicting exactly the same registered reality. Change only visual medium and internal detail density. Do not move, rescale, rotate, duplicate, replace, or redesign major subjects; do not create a new horizon, background, camera angle, or neighboring scene. If the poster extends beyond the source frame, continue only the immediately adjacent environment supported by visible edge evidence. ${illustSatNote}`;
 
           return [
             openingLine,
