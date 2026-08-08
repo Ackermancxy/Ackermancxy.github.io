@@ -43,19 +43,16 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
   touch-action:none;overflow:hidden;
 }
 
-/* 虚 — illustration fills entire canvas */
 .illust-layer{
   position:absolute;inset:0;z-index:1;pointer-events:none;
   background:var(--illust);
 }
 
-/* 实 — photo block */
 .block{
   position:absolute;z-index:2;cursor:grab;touch-action:none;
   background:var(--accent);
   border-radius:14px;
   border:1.5px solid rgba(199,125,97,0.2);
-  transition:border-radius 0.2s,background 0.2s;
   box-shadow:0 0 0 1px rgba(199,125,97,0.08) inset;
 }
 .block:active{cursor:grabbing}
@@ -65,24 +62,7 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
   color:rgba(199,125,97,0.4);pointer-events:none;
   letter-spacing:0.08em;text-transform:uppercase;
 }
-/* when illustration is the draggable block */
-.block.is-illust{
-  background:rgba(180,155,130,0.2);
-  border-color:rgba(180,155,130,0.2);
-  box-shadow:0 0 0 1px rgba(180,155,130,0.06) inset;
-}
-.block.is-illust .label{color:rgba(180,155,130,0.4)}
 
-/* the complementary backdrop */
-.backdrop{
-  position:absolute;inset:0;z-index:0;pointer-events:none;
-}
-.backdrop .fill{
-  position:absolute;inset:0;
-  background:var(--illust);
-}
-
-/* handles */
 .handle{
   position:absolute;width:20px;height:20px;
   background:#fff;border:2px solid rgba(0,0,0,0.2);
@@ -103,7 +83,7 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
 
 .bar{
   width:100%;max-width:600px;padding:8px 18px 14px;
-  display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+  display:flex;gap:6px;align-items:center;
 }
 .chip-row{
   display:flex;gap:3px;
@@ -124,11 +104,8 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
   border:1px solid #e5ded4;border-radius:9px;cursor:pointer;
   color:var(--muted);background:var(--paper);white-space:nowrap;
 }
-.act:active{background:#e5ded4}
 .act.go{background:var(--text);color:var(--bg);border-color:var(--text)}
 .act.go:active{opacity:0.8}
-.act.swap{background:var(--accent);color:var(--accent-solid);border-color:rgba(199,125,97,0.2)}
-.act.swap:active{opacity:0.8}
 
 .toast{
   position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
@@ -144,7 +121,7 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
   header{padding:10px 14px 4px}
   header h1{font-size:0.95rem}
   .stage{padding:6px 12px}
-  .bar{padding:6px 12px 12px;gap:5px}
+  .bar{padding:6px 12px 12px}
   .chip{padding:5px 8px;font-size:0.66rem}
   .act{padding:5px 10px;font-size:0.66rem}
   .handle{width:26px;height:26px}
@@ -160,32 +137,26 @@ header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);borde
 
 <div class="stage" id="stage">
   <div class="canvas" id="cv">
-    <div class="illust-layer" id="illustBg"></div>
+    <div class="illust-layer"></div>
     <div class="block" id="block"><span class="label">PHOTO</span></div>
   </div>
 </div>
 
 <div class="bar" id="bar">
   <div class="chip-row" id="ratioRow"></div>
-  <button class="act swap" id="layerBtn">插画在上</button>
-  <div class="chip-row" id="presetRow"></div>
   <button class="act go" id="applyBtn" style="display:none">应用</button>
-  <button class="act go" id="copyBtn">复制</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 (()=>{
-const s={rw:3,rh:5,px:5,py:5,pw:90,ph:45,photoOnTop:true};
+const s={rw:3,rh:5,px:5,py:5,pw:90,ph:45};
 const stage=document.getElementById('stage');
 const cv=document.getElementById('cv');
 const blk=document.getElementById('block');
-const illustBg=document.getElementById('illustBg');
 const toast=document.getElementById('toast');
-const layerBtn=document.getElementById('layerBtn');
 
-// build handles
 ['nw','n','ne','e','se','s','sw','w'].forEach(d=>{
   const h=document.createElement('div');h.className='handle '+d;h.dataset.dir=d;blk.appendChild(h);
 });
@@ -209,18 +180,15 @@ function apply(){
   blk.style.height=(s.ph/100*ch)+'px';
 }
 
-// --- drag & resize ---
 let drag=null,ds={};
-
 blk.addEventListener('mousedown',e=>{
   if(e.target.classList.contains('handle'))return;
-  drag='move';const p={x:e.clientX,y:e.clientY,px:s.px,py:s.py};ds=p;
+  drag='move';ds={x:e.clientX,y:e.clientY,px:s.px,py:s.py};
 });
 blk.addEventListener('touchstart',e=>{
   if(e.target.classList.contains('handle'))return;
   drag='move';const t=e.touches[0];ds={x:t.clientX,y:t.clientY,px:s.px,py:s.py};
 },{passive:false});
-
 blk.querySelectorAll('.handle').forEach(h=>{
   h.addEventListener('mousedown',e=>{
     e.stopPropagation();drag='resize';
@@ -232,7 +200,6 @@ blk.querySelectorAll('.handle').forEach(h=>{
     ds={x:t.clientX,y:t.clientY,px:s.px,py:s.py,pw:s.pw,ph:s.ph,dir:h.dataset.dir};
   },{passive:false});
 });
-
 function onMove(e){
   if(!drag)return;e.preventDefault();
   const pt=e.touches?e.touches[0]:e;
@@ -263,64 +230,26 @@ document.addEventListener('touchmove',onMove,{passive:false});
 document.addEventListener('mouseup',onEnd);
 document.addEventListener('touchend',onEnd);
 
-// --- layer toggle ---
-function updateLayerUI(){
-  if(s.photoOnTop){
-    blk.classList.remove('is-illust');
-    blk.querySelector('.label').textContent='PHOTO';
-    layerBtn.textContent='插画在上';
-    illustBg.style.opacity='1';
-  } else {
-    blk.classList.add('is-illust');
-    blk.querySelector('.label').textContent='ILLUST';
-    layerBtn.textContent='照片在上';
-    illustBg.style.opacity='0.15';
-  }
-}
-layerBtn.addEventListener('click',()=>{
-  s.photoOnTop=!s.photoOnTop;updateLayerUI();
-  showToast(s.photoOnTop?'照片在上层 · 插画在底层':'插画在上层 · 照片在底层');
-});
-
-// --- chips ---
-function chips(rowId,items,onClick){
-  const wrap=document.getElementById(rowId);
-  items.forEach((it,i)=>{
+// ratio chips
+(function(){
+  const wrap=document.getElementById('ratioRow');
+  [{label:'3:5',rw:3,rh:5},{label:'2:3',rw:2,rh:3},{label:'1:1',rw:1,rh:1},{label:'4:5',rw:4,rh:5},{label:'9:16',rw:9,rh:16}].forEach((it,i)=>{
     const el=document.createElement('button');
     el.className='chip'+(i===0?' on':'');
     el.textContent=it.label;
     el.addEventListener('click',()=>{
       wrap.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
       el.classList.add('on');
-      onClick(it);
+      s.rw=it.rw;s.rh=it.rh;resize();
     });
     wrap.appendChild(el);
   });
-}
+})();
 
-chips('ratioRow',[
-  {label:'3:5',rw:3,rh:5},{label:'2:3',rw:2,rh:3},{label:'1:1',rw:1,rh:1},
-  {label:'4:5',rw:4,rh:5},{label:'9:16',rw:9,rh:16},
-],it=>{s.rw=it.rw;s.rh=it.rh;resize()});
-
-chips('presetRow',[
-  {label:'上实下虚',px:5,py:5,pw:90,ph:45},
-  {label:'上虚下实',px:5,py:50,pw:90,ph:45},
-  {label:'左实右虚',px:5,py:5,pw:43,ph:90},
-  {label:'左虚右实',px:52,py:5,pw:43,ph:90},
-  {label:'实嵌虚中',px:28,py:30,pw:44,ph:40},
-  {label:'虚嵌实中',px:28,py:30,pw:44,ph:40},
-  {label:'实为背景',px:5,py:5,pw:90,ph:90},
-  {label:'虚为背景',px:20,py:20,pw:60,ph:60},
-],it=>{s.px=it.px;s.py=it.py;s.pw=it.pw;s.ph=it.ph;apply()});
-
-// --- copy ---
 function buildDesc(){
-  const who=s.photoOnTop?'photo':'illustration';
-  return `Composition: user-defined. ${s.rw}:${s.rh} canvas. The ${who} occupies (${s.px}%,${s.py}%) ${s.pw}%×${s.ph}%. The opposite medium fills the remaining canvas. One continuous scene across the boundary.`;
+  return `Composition: user-defined. ${s.rw}:${s.rh} canvas. The photo occupies (${s.px}%,${s.py}%) ${s.pw}%×${s.ph}%. The illustration fills the remaining canvas. One continuous scene across the boundary.`;
 }
 
-// Show apply button when embedded in iframe
 if(window!==window.parent){
   document.getElementById('applyBtn').style.display='';
   document.getElementById('applyBtn').addEventListener('click',()=>{
@@ -329,17 +258,13 @@ if(window!==window.parent){
   });
 }
 
-document.getElementById('copyBtn').addEventListener('click',()=>{
-  navigator.clipboard.writeText(buildDesc()).then(()=>showToast('已复制'));
-});
-
 function showToast(msg){
   toast.textContent=msg;toast.classList.add('show');
   clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),2000);
 }
 
 window.addEventListener('resize',resize);
-resize();updateLayerUI();
+resize();
 })();
 </script>
 </body>
