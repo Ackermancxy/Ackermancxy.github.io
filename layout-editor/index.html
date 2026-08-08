@@ -5,169 +5,149 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Layout Editor</title>
 <style>
-:root {
-  --bg: #f5f0e8;
-  --bg-card: #faf8f4;
-  --border: #e0d8cc;
-  --text: #3a3530;
-  --text-muted: #999088;
-  --accent: #c77d61;
-  --canvas-bg: #fefdf9;
-  --photo: #6b8fab;
-  --photo-alpha: 0.55;
-  --illust: #c49a7a;
+:root{
+  --bg:#f3efe8;--paper:#fdfaf5;
+  --text:#3a3530;--muted:#9a9488;
+  --accent:rgba(199,125,97,0.35);
+  --accent-solid:#c77d61;
+  --illust:rgba(180,155,130,0.15);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
 body{
   font-family:-apple-system,"PingFang SC","Noto Sans SC",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+  background:var(--bg);color:var(--text);
+  display:flex;flex-direction:column;align-items:center;
   overflow-x:hidden;
   -webkit-user-select:none;user-select:none;
   -webkit-tap-highlight-color:transparent;
 }
 
-/* Header */
 header{
-  width:100%;max-width:600px;
-  padding:16px 20px 8px;
+  width:100%;max-width:600px;padding:14px 18px 6px;
   display:flex;align-items:center;justify-content:space-between;
 }
-header h1{
-  font-size:1.1rem;font-weight:600;
-  letter-spacing:-0.01em;
-}
-header .badge{
-  font-size:0.65rem;color:var(--text-muted);
-  background:var(--bg-card);border:1px solid var(--border);
-  padding:3px 10px;border-radius:12px;
-}
+header h1{font-size:1.05rem;font-weight:600;letter-spacing:-0.01em}
+header .badge{font-size:0.62rem;color:var(--muted);background:var(--paper);border:1px solid #e5ded4;padding:3px 10px;border-radius:10px}
 
-/* Canvas */
-.canvas-stage{
+.stage{
   flex:1;width:100%;max-width:600px;
   display:flex;align-items:center;justify-content:center;
-  padding:12px 20px;
-  min-height:0;
+  padding:10px 18px;min-height:0;
 }
-.canvas-frame{
-  position:relative;
-  background:var(--canvas-bg);
-  box-shadow:0 2px 20px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.04);
-  border-radius:2px;
-  max-height:100%;
+.canvas{
+  position:relative;background:var(--paper);
+  box-shadow:0 2px 24px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.03);
+  border-radius:3px;max-height:100%;
   aspect-ratio:var(--rw)/var(--rh);
-  touch-action:none;
+  touch-action:none;overflow:hidden;
 }
 
-/* Photo block */
-.photo-block{
-  position:absolute;z-index:2;
-  background:var(--photo);
-  opacity:var(--photo-alpha);
-  border-radius:1px;
-  cursor:grab;
-  touch-action:none;
-  transition:opacity 0.2s;
+/* 虚 — illustration fills entire canvas */
+.illust-layer{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:var(--illust);
 }
-.photo-block:active{cursor:grabbing;opacity:0.65}
-.photo-block .hint{
+
+/* 实 — photo block */
+.block{
+  position:absolute;z-index:2;cursor:grab;touch-action:none;
+  background:var(--accent);
+  border-radius:14px;
+  border:1.5px solid rgba(199,125,97,0.2);
+  transition:border-radius 0.2s,background 0.2s;
+  box-shadow:0 0 0 1px rgba(199,125,97,0.08) inset;
+}
+.block:active{cursor:grabbing}
+.block .label{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(0.5rem,1vw,0.65rem);font-weight:500;
+  color:rgba(199,125,97,0.4);pointer-events:none;
+  letter-spacing:0.08em;text-transform:uppercase;
+}
+/* when illustration is the draggable block */
+.block.is-illust{
+  background:rgba(180,155,130,0.2);
+  border-color:rgba(180,155,130,0.2);
+  box-shadow:0 0 0 1px rgba(180,155,130,0.06) inset;
+}
+.block.is-illust .label{color:rgba(180,155,130,0.4)}
+
+/* the complementary backdrop */
+.backdrop{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+}
+.backdrop .fill{
   position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:clamp(0.55rem,1.2vw,0.7rem);
-  color:rgba(255,255,255,0.5);
-  pointer-events:none;
-  letter-spacing:0.06em;
+  background:var(--illust);
 }
 
-/* Handles */
+/* handles */
 .handle{
-  position:absolute;width:18px;height:18px;
-  background:#fff;border:2px solid rgba(0,0,0,0.3);
+  position:absolute;width:20px;height:20px;
+  background:#fff;border:2px solid rgba(0,0,0,0.2);
   border-radius:50%;z-index:10;
   transform:translate(-50%,-50%);
-  box-shadow:0 1px 3px rgba(0,0,0,0.12);
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+  transition:transform 0.12s,background 0.12s,border-color 0.12s;
 }
-.handle:active{background:var(--accent);border-color:var(--accent);transform:translate(-50%,-50%) scale(1.3)}
-.handle.nw{top:0;left:0;cursor:nw-resize}
-.handle.ne{top:0;left:100%;cursor:ne-resize}
-.handle.sw{top:100%;left:0;cursor:sw-resize}
-.handle.se{top:100%;left:100%;cursor:se-resize}
-.handle.n{top:0;left:50%;cursor:n-resize}
-.handle.s{top:100%;left:50%;cursor:s-resize}
-.handle.w{top:50%;left:0;cursor:w-resize}
-.handle.e{top:50%;left:100%;cursor:e-resize}
+.handle:active{background:var(--accent-solid);border-color:var(--accent-solid);transform:translate(-50%,-50%) scale(1.35)}
+.nw{top:0;left:0}
+.ne{top:0;left:100%}
+.sw{top:100%;left:0}
+.se{top:100%;left:100%}
+.n{top:0;left:50%}
+.s{top:100%;left:50%}
+.w{top:50%;left:0}
+.e{top:50%;left:100%}
 
-/* Torn SVG */
-.torn-svg{
-  position:absolute;inset:0;z-index:3;pointer-events:none;
-  overflow:visible;
+.bar{
+  width:100%;max-width:600px;padding:8px 18px 14px;
+  display:flex;gap:6px;align-items:center;flex-wrap:wrap;
 }
-.torn-svg path{
-  fill:none;stroke:rgba(0,0,0,0.08);
-  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-}
-
-/* Bottom bar */
-.bottom-bar{
-  width:100%;max-width:600px;
-  padding:10px 20px 14px;
-  display:flex;gap:8px;align-items:center;
-  flex-wrap:wrap;
-}
-.chip-group{
-  display:flex;gap:4px;
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:10px;padding:3px;
+.chip-row{
+  display:flex;gap:3px;
+  background:var(--paper);border:1px solid #e5ded4;
+  border-radius:9px;padding:3px;
 }
 .chip{
-  padding:6px 12px;font-size:0.72rem;font-weight:500;
-  border-radius:7px;cursor:pointer;color:var(--text-muted);
-  white-space:nowrap;transition:all 0.15s;
-  border:none;background:none;
-}
-.chip.on{
-  background:var(--text);color:var(--bg);
-}
-.chip:active{opacity:0.7}
-
-/* Ghost buttons */
-.ghost-btn{
-  padding:7px 14px;font-size:0.72rem;font-weight:500;
-  border:1px solid var(--border);border-radius:10px;
-  cursor:pointer;color:var(--text-muted);
-  background:var(--bg-card);white-space:nowrap;
+  padding:5px 10px;font-size:0.7rem;font-weight:500;
+  border-radius:7px;cursor:pointer;color:var(--muted);
+  white-space:nowrap;border:none;background:none;
   transition:all 0.15s;
 }
-.ghost-btn:active{background:var(--border)}
-.ghost-btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
-.ghost-btn.primary:active{opacity:0.8}
+.chip.on{background:var(--text);color:var(--bg)}
+.chip:active{opacity:0.7}
 
-/* Output toast */
-.output-toast{
+.act{
+  padding:6px 12px;font-size:0.7rem;font-weight:500;
+  border:1px solid #e5ded4;border-radius:9px;cursor:pointer;
+  color:var(--muted);background:var(--paper);white-space:nowrap;
+}
+.act:active{background:#e5ded4}
+.act.go{background:var(--text);color:var(--bg);border-color:var(--text)}
+.act.go:active{opacity:0.8}
+.act.swap{background:var(--accent);color:var(--accent-solid);border-color:rgba(199,125,97,0.2)}
+.act.swap:active{opacity:0.8}
+
+.toast{
   position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
   background:var(--text);color:var(--bg);
-  padding:10px 20px;border-radius:10px;
+  padding:10px 22px;border-radius:10px;
   font-size:0.75rem;z-index:100;
-  opacity:0;pointer-events:none;
-  transition:opacity 0.3s;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
   max-width:90vw;text-align:center;
 }
-.output-toast.show{opacity:1;pointer-events:auto}
+.toast.show{opacity:1}
 
-/* Mobile */
 @media(max-width:480px){
-  header{padding:12px 16px 4px}
-  header h1{font-size:1rem}
-  .canvas-stage{padding:8px 12px}
-  .bottom-bar{padding:8px 12px 12px;gap:6px}
-  .chip{padding:5px 10px;font-size:0.68rem}
-  .ghost-btn{padding:6px 11px;font-size:0.68rem}
-  .handle{width:22px;height:22px}
+  header{padding:10px 14px 4px}
+  header h1{font-size:0.95rem}
+  .stage{padding:6px 12px}
+  .bar{padding:6px 12px 12px;gap:5px}
+  .chip{padding:5px 8px;font-size:0.66rem}
+  .act{padding:5px 10px;font-size:0.66rem}
+  .handle{width:26px;height:26px}
 }
 </style>
 </head>
@@ -178,41 +158,40 @@ header .badge{
   <span class="badge">Gathered Scenes</span>
 </header>
 
-<div class="canvas-stage" id="stage">
-  <div class="canvas-frame" id="canvas">
-    <div class="photo-block" id="photo">
-      <span class="hint">PHOTO</span>
-    </div>
-    <svg class="torn-svg" id="torn"></svg>
+<div class="stage" id="stage">
+  <div class="canvas" id="cv">
+    <div class="illust-layer" id="illustBg"></div>
+    <div class="block" id="block"><span class="label">PHOTO</span></div>
   </div>
 </div>
 
-<div class="bottom-bar" id="bar">
-  <div class="chip-group" id="ratioGroup"></div>
-  <div class="chip-group" id="presetGroup"></div>
-  <button class="ghost-btn" id="reshuffleBtn">撕边</button>
-  <button class="ghost-btn primary" id="copyBtn">复制</button>
+<div class="bar" id="bar">
+  <div class="chip-row" id="ratioRow"></div>
+  <button class="act swap" id="layerBtn">插画在上</button>
+  <div class="chip-row" id="presetRow"></div>
+  <button class="act go" id="copyBtn">复制</button>
 </div>
 
-<div class="output-toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 (()=>{
-const s={rw:3,rh:5,px:5,py:5,pw:90,ph:45,seed:Date.now()};
+const s={rw:3,rh:5,px:5,py:5,pw:90,ph:45,photoOnTop:true};
 const stage=document.getElementById('stage');
-const cv=document.getElementById('canvas');
-const ph=document.getElementById('photo');
-const torn=document.getElementById('torn');
+const cv=document.getElementById('cv');
+const blk=document.getElementById('block');
+const illustBg=document.getElementById('illustBg');
 const toast=document.getElementById('toast');
+const layerBtn=document.getElementById('layerBtn');
 
-// --- handles ---
-const dirs=['nw','n','ne','e','se','s','sw','w'];
-dirs.forEach(d=>{const h=document.createElement('div');h.className='handle '+d;h.dataset.dir=d;ph.appendChild(h)});
+// build handles
+['nw','n','ne','e','se','s','sw','w'].forEach(d=>{
+  const h=document.createElement('div');h.className='handle '+d;h.dataset.dir=d;blk.appendChild(h);
+});
 
-// --- sizing ---
 function resize(){
-  const maxH=stage.clientHeight-24;
-  const maxW=stage.clientWidth-24;
+  const maxH=stage.clientHeight-20;
+  const maxW=stage.clientWidth-20;
   const r=s.rw/s.rh;
   let w,h;
   if(maxH*r<=maxW){h=maxH;w=h*r}else{w=maxW;h=w/r}
@@ -223,60 +202,51 @@ function resize(){
 }
 function apply(){
   const cw=cv.clientWidth,ch=cv.clientHeight;
-  ph.style.left=(s.px/100*cw)+'px';
-  ph.style.top=(s.py/100*ch)+'px';
-  ph.style.width=(s.pw/100*cw)+'px';
-  ph.style.height=(s.ph/100*ch)+'px';
-  drawTorn();
+  blk.style.left=(s.px/100*cw)+'px';
+  blk.style.top=(s.py/100*ch)+'px';
+  blk.style.width=(s.pw/100*cw)+'px';
+  blk.style.height=(s.ph/100*ch)+'px';
 }
 
-// --- torn edge ---
-function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function tornPath(x1,y1,x2,y2,n,g){
-  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
-  const ux=dx/len,uy=dy/len,nx=-uy,ny=ux;
-  let d=`M${x1},${y1}`;const sl=len/n;
-  for(let i=1;i<n;i++){const j=(g()-0.5)*sl*0.55;d+=` L${x1+dx*i/n+nx*j},${y1+dy*i/n+ny*j}`}
-  d+=` L${x2},${y2}`;return d
-}
-function drawTorn(){
-  const cw=cv.clientWidth,ch=cv.clientHeight;
-  const l=s.px/100*cw,t=s.py/100*ch,w=s.pw/100*cw,h=s.ph/100*ch;
-  const r=l+w,b=t+h,g=rng(s.seed);
-  const segs=Math.max(3,Math.floor(Math.min(w,h)/16));
-  let paths='';
-  if(t>0.5)paths+=`<path d="${tornPath(l,t,r,t,segs,g)}"/>`;
-  if(r<cw-0.5)paths+=`<path d="${tornPath(r,t,r,b,segs,g)}"/>`;
-  if(b<ch-0.5)paths+=`<path d="${tornPath(r,b,l,b,segs,g)}"/>`;
-  if(l>0.5)paths+=`<path d="${tornPath(l,b,l,t,segs,g)}"/>`;
-  torn.innerHTML=paths
-}
-
-// --- drag ---
+// --- drag & resize ---
 let drag=null,ds={};
-function startMove(e){
-  drag='move';const pt=e.touches?e.touches[0]:e;
-  ds={x:pt.clientX,y:pt.clientY,px:s.px,py:s.py};
-}
-function startResize(e,dir){
-  e.stopPropagation();drag='resize';ds.dir=dir;
-  const pt=e.touches?e.touches[0]:e;
-  ds={x:pt.clientX,y:pt.clientY,px:s.px,py:s.py,pw:s.pw,ph:s.ph};
-}
+
+blk.addEventListener('mousedown',e=>{
+  if(e.target.classList.contains('handle'))return;
+  drag='move';const p={x:e.clientX,y:e.clientY,px:s.px,py:s.py};ds=p;
+});
+blk.addEventListener('touchstart',e=>{
+  if(e.target.classList.contains('handle'))return;
+  drag='move';const t=e.touches[0];ds={x:t.clientX,y:t.clientY,px:s.px,py:s.py};
+},{passive:false});
+
+blk.querySelectorAll('.handle').forEach(h=>{
+  h.addEventListener('mousedown',e=>{
+    e.stopPropagation();drag='resize';
+    ds={x:e.clientX,y:e.clientY,px:s.px,py:s.py,pw:s.pw,ph:s.ph,dir:h.dataset.dir};
+  });
+  h.addEventListener('touchstart',e=>{
+    e.stopPropagation();drag='resize';
+    const t=e.touches[0];
+    ds={x:t.clientX,y:t.clientY,px:s.px,py:s.py,pw:s.pw,ph:s.ph,dir:h.dataset.dir};
+  },{passive:false});
+});
+
 function onMove(e){
   if(!drag)return;e.preventDefault();
   const pt=e.touches?e.touches[0]:e;
   const cw=cv.clientWidth,ch=cv.clientHeight;
-  const dx=(pt.clientX-ds.x)/cw*100,dy=(pt.clientY-ds.y)/ch*100;
+  const dx=(pt.clientX-ds.x)/cw*100;
+  const dy=(pt.clientY-ds.y)/ch*100;
   if(drag==='move'){
     s.px=Math.max(0,Math.min(100-s.pw,ds.px+dx));
     s.py=Math.max(0,Math.min(100-s.ph,ds.py+dy));
   }else{
     const d=ds.dir;
     if(d.includes('e'))s.pw=Math.round(Math.max(10,Math.min(100-s.px,ds.pw+dx)));
-    if(d.includes('w')){const np=Math.max(0,Math.min(ds.px+ds.pw-10,ds.px+dx));s.px=Math.round(np);s.pw=Math.round(ds.px+ds.pw-s.px)}
+    if(d.includes('w')){const n=Math.max(0,Math.min(ds.px+ds.pw-10,ds.px+dx));s.px=Math.round(n);s.pw=Math.round(ds.px+ds.pw-s.px)}
     if(d.includes('s'))s.ph=Math.round(Math.max(10,Math.min(100-s.py,ds.ph+dy)));
-    if(d.includes('n')){const np=Math.max(0,Math.min(ds.py+ds.ph-10,ds.py+dy));s.py=Math.round(np);s.ph=Math.round(ds.py+ds.ph-s.py)}
+    if(d.includes('n')){const n=Math.max(0,Math.min(ds.py+ds.ph-10,ds.py+dy));s.py=Math.round(n);s.ph=Math.round(ds.py+ds.ph-s.py)}
   }
   s.px=Math.max(0,Math.min(95,Math.round(s.px)));
   s.py=Math.max(0,Math.min(95,Math.round(s.py)));
@@ -286,88 +256,77 @@ function onMove(e){
   if(s.py+s.ph>100)s.ph=100-s.py;
   apply();
 }
-function endDrag(){
-  if(!drag)return;drag=null;s.seed=Date.now();drawTorn()
-}
-
-ph.addEventListener('mousedown',e=>{if(!e.target.classList.contains('handle'))startMove(e)});
-ph.addEventListener('touchstart',e=>{if(!e.target.classList.contains('handle'))startMove(e)},{passive:false});
-ph.querySelectorAll('.handle').forEach(h=>{
-  h.addEventListener('mousedown',e=>startResize(e,h.dataset.dir));
-  h.addEventListener('touchstart',e=>startResize(e,h.dataset.dir),{passive:false});
-});
+function onEnd(){drag=null}
 document.addEventListener('mousemove',onMove);
 document.addEventListener('touchmove',onMove,{passive:false});
-document.addEventListener('mouseup',endDrag);
-document.addEventListener('touchend',endDrag);
+document.addEventListener('mouseup',onEnd);
+document.addEventListener('touchend',onEnd);
+
+// --- layer toggle ---
+function updateLayerUI(){
+  if(s.photoOnTop){
+    blk.classList.remove('is-illust');
+    blk.querySelector('.label').textContent='PHOTO';
+    layerBtn.textContent='插画在上';
+    illustBg.style.opacity='1';
+  } else {
+    blk.classList.add('is-illust');
+    blk.querySelector('.label').textContent='ILLUST';
+    layerBtn.textContent='照片在上';
+    illustBg.style.opacity='0.15';
+  }
+}
+layerBtn.addEventListener('click',()=>{
+  s.photoOnTop=!s.photoOnTop;updateLayerUI();
+  showToast(s.photoOnTop?'照片在上层 · 插画在底层':'插画在上层 · 照片在底层');
+});
 
 // --- chips ---
-function buildChips(container,items,stateKey,defVal,cls){
-  const wrap=document.getElementById(container);
-  items.forEach(it=>{const el=document.createElement('button');
-    el.className='chip'+(it.id===defVal?' on':'')+(cls?' '+cls:'');
-    el.textContent=it.label;el.dataset.value=it.id;
+function chips(rowId,items,onClick){
+  const wrap=document.getElementById(rowId);
+  items.forEach((it,i)=>{
+    const el=document.createElement('button');
+    el.className='chip'+(i===0?' on':'');
+    el.textContent=it.label;
     el.addEventListener('click',()=>{
-      s[stateKey]=it.id;if(it.apply)it.apply();
       wrap.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
       el.classList.add('on');
-      if(stateKey==='pw'||stateKey==='ph'||stateKey==='px'||stateKey==='py'){apply();s.seed=Date.now();drawTorn()}
+      onClick(it);
     });
     wrap.appendChild(el);
   });
 }
 
-// Ratio chips
-buildChips('ratioGroup',[
-  {id:'3:5',label:'3:5',apply(){s.rw=3;s.rh=5;resize()}},
-  {id:'2:3',label:'2:3',apply(){s.rw=2;s.rh=3;resize()}},
-  {id:'1:1',label:'1:1',apply(){s.rw=1;s.rh=1;resize()}},
-  {id:'4:5',label:'4:5',apply(){s.rw=4;s.rh=5;resize()}},
-  {id:'9:16',label:'9:16',apply(){s.rw=9;s.rh=16;resize()}},
-],'rw','3:5');
+chips('ratioRow',[
+  {label:'3:5',rw:3,rh:5},{label:'2:3',rw:2,rh:3},{label:'1:1',rw:1,rh:1},
+  {label:'4:5',rw:4,rh:5},{label:'9:16',rw:9,rh:16},
+],it=>{s.rw=it.rw;s.rh=it.rh;resize()});
 
-// Preset chips (condensed)
-buildChips('presetGroup',[
-  {id:'pt',label:'上实下虚',apply(){s.px=5;s.py=5;s.pw=90;s.ph=45}},
-  {id:'pb',label:'上虚下实',apply(){s.px=5;s.py=50;s.pw=90;s.ph=45}},
-  {id:'pl',label:'左实右虚',apply(){s.px=5;s.py=5;s.pw=43;s.ph=90}},
-  {id:'pr',label:'左虚右实',apply(){s.px=52;s.py=5;s.pw=43;s.ph=90}},
-  {id:'pi',label:'嵌虚',apply(){s.px=28;s.py=30;s.pw=44;s.ph=40}},
-  {id:'ii',label:'嵌实',apply(){s.px=28;s.py=30;s.pw=44;s.ph=40}},
-  {id:'fbg',label:'实底',apply(){s.px=5;s.py=5;s.pw=90;s.ph=90}},
-  {id:'ibg',label:'虚底',apply(){s.px=20;s.py=20;s.pw=60;s.ph=60}},
-],'px','pt');
+chips('presetRow',[
+  {label:'上实下虚',px:5,py:5,pw:90,ph:45},
+  {label:'上虚下实',px:5,py:50,pw:90,ph:45},
+  {label:'左实右虚',px:5,py:5,pw:43,ph:90},
+  {label:'左虚右实',px:52,py:5,pw:43,ph:90},
+  {label:'实嵌虚中',px:28,py:30,pw:44,ph:40},
+  {label:'虚嵌实中',px:28,py:30,pw:44,ph:40},
+  {label:'实为背景',px:5,py:5,pw:90,ph:90},
+  {label:'虚为背景',px:20,py:20,pw:60,ph:60},
+],it=>{s.px=it.px;s.py=it.py;s.pw=it.pw;s.ph=it.ph;apply()});
 
-// Reshuffle torn
-document.getElementById('reshuffleBtn').addEventListener('click',()=>{
-  s.seed=Date.now();drawTorn();
-});
-
-// Copy
+// --- copy ---
 document.getElementById('copyBtn').addEventListener('click',()=>{
-  const desc=buildDesc();
-  navigator.clipboard.writeText(desc).then(()=>showToast('已复制布局描述'));
+  const who=s.photoOnTop?'photo':'illustration';
+  const desc=`Composition: user-defined. ${s.rw}:${s.rh} canvas. The ${who} occupies (${s.px}%,${s.py}%) ${s.pw}%×${s.ph}%. The opposite medium fills the remaining canvas. One continuous scene across the boundary.`;
+  navigator.clipboard.writeText(desc).then(()=>showToast('已复制'));
 });
-
-// --- output ---
-function buildDesc(){
-  const {px,py,pw,ph,rw,rh}=s;
-  let type='custom';
-  if(ph>=40&&ph<=58&&py<8&&pw>80)type='photo-top';
-  else if(ph>=40&&ph<=58&&py>40&&pw>80)type='photo-bottom';
-  else if(pw>=35&&pw<=55&&px<8&&ph>80)type='photo-left';
-  else if(pw>=35&&pw<=55&&px>40&&ph>80)type='photo-right';
-  else if(pw>=20&&pw<=40&&ph>=25&&ph<=45&&(px+pw/2)>35&&(px+pw/2)<65&&(py+ph/2)>30&&(py+ph/2)<70)type='photo-inset';
-  return `Composition: user-defined. ${rw}:${rh} canvas. Photo at (${px}%,${py}%) ${pw}%×${ph}%. Illustration fills remaining. One continuous scene across torn boundary.`;
-}
 
 function showToast(msg){
   toast.textContent=msg;toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'),2000);
+  clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),2000);
 }
 
 window.addEventListener('resize',resize);
-resize();
+resize();updateLayerUI();
 })();
 </script>
 </body>
